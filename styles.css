@@ -1,0 +1,104 @@
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+* {
+    font-family: 'Sulphur Point', sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: rgb(20, 47, 105);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    height: 15vh;
+    background-color: rgb(35, 163, 248);
+    padding-left: 4em;
+    width: 100%;
+}
+
+h1 {
+    margin: 0;
+    color: white;
+    font-size: 3em;
+    width: fit-content;
+    height: fit-content;
+}
+
+#side-bar {
+    background-color: white;
+    height: 85vh;
+    width: 300px;
+    float: left;
+    padding: 2em 1em;
+    overflow: auto;
+}
+
+#side-bar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#category-btns li {
+    background-color: rgb(35, 163, 248);
+    padding: 0.6em 1em;
+    border-radius: 5px;
+    color: white;
+    margin-bottom: 0.7em;
+}
+
+#category-btns span {
+    font-size: 1.2em;
+    margin-left: 0.5em;
+}
+
+#category-btns li:hover {
+    cursor: pointer;
+    background-color: rgba(35, 163, 248, 0.733);
+}
+
+#side-bar h2 {
+    margin: 1.4em 0 1em 0.8em;
+}
+
+#projects li {
+    margin-bottom: 0.7em;
+}
+
+#projects span {
+    margin-left: 0.4em;
+    font-size: 1.2em;
+}
+
+#add-project-btn,
+#projects li {
+    padding: 0.6em 1em;
+    border-radius: 5px;
+    background-color: rgba(20, 47, 105);
+    color: white;
+}
+
+#add-project-btn:hover,
+#projects li:hover {
+    cursor: pointer;
+    background-color: rgba(20, 47, 105, 0.623);
+}
+
+#add-project-btn span {
+    margin-left: 0.6em;
+    font-size: 1.2em;
+}
+
+#content-area {
+    height: 85vh;
+}
