@@ -2,6 +2,11 @@ const display = (() => {
 
     const renderMain = (target) => {
         const header = document.createElement('header');
+        
+        const logo = document.createElement('i');
+        logo.className = 'far fa-check-circle';
+        header.appendChild(logo);
+
         const h1 = document.createElement('h1');
         h1.textContent = 'My Todo';
         header.appendChild(h1);
@@ -61,7 +66,59 @@ const display = (() => {
         });
     };
 
-    return {renderMain, populateSideBar};
+    const renderContentArea = (target, projects, tasks) => {
+        projects.map(project => {
+            const nameWrapper = document.createElement('div');
+            nameWrapper.className = 'name-wrapper';
+
+            const nameIcon = document.createElement('i');
+            nameIcon.className = 'fas fa-tasks';
+            nameWrapper.appendChild(nameIcon);
+
+            const projectName = document.createElement('h2');
+            projectName.textContent = project.name;
+            nameWrapper.appendChild(projectName);
+            
+            const listWrapper = document.createElement('ul');
+            
+            const projectTasks = tasks.filter(task => {
+                if (task.projectId === project.id) return true;
+                return false;
+            });
+            projectTasks.map(task => {
+                const taskWrapper = document.createElement('li');
+
+                const circle = document.createElement('span');
+                circle.className = 'check-circle';
+                taskWrapper.appendChild(circle);
+                
+                const taskLabel = document.createElement('span');
+                taskLabel.className = 'task-label';
+                taskLabel.textContent = task.name;
+                taskWrapper.appendChild(taskLabel);
+                
+                const priorityWrapper = document.createElement('div');
+                priorityWrapper.className = 'priority-level';
+
+                const flagIcon = document.createElement('i');
+                flagIcon.className = 'priority-flag fab fa-font-awesome-flag';
+                priorityWrapper.appendChild(flagIcon);
+                
+                taskWrapper.appendChild(priorityWrapper);
+
+                const editIcon = document.createElement('i');
+                editIcon.className = 'far fa-edit edit-icon';
+                taskWrapper.appendChild(editIcon);
+
+                listWrapper.appendChild(taskWrapper);
+            });
+
+            target.appendChild(nameWrapper);
+            target.appendChild(listWrapper);
+        });
+    };
+
+    return {renderMain, populateSideBar, renderContentArea};
 })();
 
 export default display;

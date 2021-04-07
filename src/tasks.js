@@ -4,7 +4,7 @@ const Task = (name) => {
     let priority = '';
     let projectId = '';
     let notes = '';
-    let id = new Date().getUTCMilliseconds();
+    let id = Date.now();
 
     return {name, dueDate, priority, projectId, notes, id};
 };
@@ -39,7 +39,28 @@ const taskModule = (() => {
         }
     }
 
-    return {addTask, getTasks, updateTask, deleteTask}
+    const sortByDate = (tasks) => {
+        return tasks.sort((task1, task2) => {
+            if (task1.dueDate < task2.dueDate) return -1;
+            if (task1.dueDate > task2.dueDate) return 1;
+
+            return 0;
+        });
+    };
+
+    const sortByName = (tasks) => {
+        return tasks.sort((task1, task2) => {
+            const task1Name = task1.name.toUpperCase();
+            const task2Name = task2.name.toUpperCase();
+
+            if (task1Name < task2Name) return -1;
+            if (task1Name > task2Name) return 1;
+
+            return 0;
+        });
+    };
+
+    return {addTask, getTasks, updateTask, deleteTask, sortByDate, sortByName}
 })();
 
 export {Task, taskModule};
