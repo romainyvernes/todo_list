@@ -1,3 +1,5 @@
+import { compareAsc } from 'date-fns'
+
 const Task = (name) => {
     name = name;
     let dueDate = '';
@@ -21,6 +23,14 @@ const taskModule = (() => {
         return tasks;
     };
 
+    const getTaskById = (taskId) => {
+        for (let i = 0; i < tasks.length; i++) {
+            if (tasks[i].id == taskId) {
+                return tasks[i];
+            }
+        }
+    };
+
     const updateTask = (updatedTask) => {
         for (let i = 0; i < tasks.length; i++) {
             if (tasks[i].id === updatedTask.id) {
@@ -41,10 +51,16 @@ const taskModule = (() => {
 
     const sortByDate = (tasks) => {
         return tasks.sort((task1, task2) => {
-            if (task1.dueDate < task2.dueDate) return -1;
-            if (task1.dueDate > task2.dueDate) return 1;
-
-            return 0;
+            if (task1.dueDate === '' || task2.dueDate === '') {
+                if (task1.dueDate === '' && task2.dueDate === '') {
+                    return 0;
+                } else if (task1.dueDate === '') {
+                    return 1;
+                } else if (task2.dueDate === '') {
+                    return -1;
+                }
+            }
+            compareAsc(task1.dueDate, task2.dueDate);
         });
     };
 
@@ -60,7 +76,8 @@ const taskModule = (() => {
         });
     };
 
-    return {addTask, getTasks, updateTask, deleteTask, sortByDate, sortByName}
+    return {addTask, getTasks, getTaskById, updateTask, deleteTask, sortByDate, 
+            sortByName}
 })();
 
 export {Task, taskModule};

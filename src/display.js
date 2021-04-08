@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 const display = (() => {
 
     const renderMain = (target) => {
@@ -51,6 +53,10 @@ const display = (() => {
         items.map(item => {
             const li = document.createElement('li');
 
+            if (item.projectId) {
+                li.dataset.projectId = item.projectId;
+            }
+
             if (item.iconClass) {
                 const icon = document.createElement('i');
                 icon.className = item.iconClass;
@@ -78,6 +84,12 @@ const display = (() => {
             const projectName = document.createElement('h2');
             projectName.textContent = project.name;
             nameWrapper.appendChild(projectName);
+
+            const addBtn = document.createElement('button');
+            addBtn.type = 'button';
+            addBtn.className = 'task-add-btn';
+            addBtn.textContent = '+';
+            nameWrapper.appendChild(addBtn);
             
             const listWrapper = document.createElement('ul');
             
@@ -96,12 +108,22 @@ const display = (() => {
                 taskLabel.className = 'task-label';
                 taskLabel.textContent = task.name;
                 taskWrapper.appendChild(taskLabel);
+
+                const date = document.createElement('span');
+                date.className = 'task-date';
+                if (task.dueDate !== '') {
+                    date.textContent = format(task.dueDate, 'MM/dd/yyyy');
+                } else {
+                    date.textContent = 'no due date';
+                }
+                taskWrapper.appendChild(date);
                 
                 const priorityWrapper = document.createElement('div');
                 priorityWrapper.className = 'priority-level';
 
                 const flagIcon = document.createElement('i');
                 flagIcon.className = 'priority-flag fab fa-font-awesome-flag';
+                flagIcon.dataset.color = 'green';
                 priorityWrapper.appendChild(flagIcon);
                 
                 taskWrapper.appendChild(priorityWrapper);
