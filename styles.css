@@ -116,6 +116,8 @@ h1 {
 
 .name-wrapper {
     display: flex;
+    position: relative;
+    margin-top: 0.4em;
 }
 
 .name-wrapper i {
@@ -126,7 +128,26 @@ h1 {
     margin: 0 0 0 0.5em;
 }
 
+.task-add-btn {
+    position: absolute;
+    right: 0;
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    font-size: 1.8em;
+    border: 2px solid rgb(35, 163, 248);
+    background-color: rgb(20, 47, 105);
+    color: white;
+    transition: transform 0.4s;
+    outline: none;
+}
+
+.task-add-btn:hover {
+    transform: rotate(90deg) scale(1.2);
+}
+
 #content-area ul {
+    margin-top: 2em;
     padding-right: 3em;
     margin-bottom: 2.5em;
 }
@@ -153,14 +174,27 @@ h1 {
     display: inline-block;
 }
 
+.task-date {
+    position: absolute;
+    right: 7em;
+}
+
 .priority-level {
     display: inline-block;
     position: absolute;
     right: 4em;
 }
 
-.priority-flag {
+.priority-flag[data-color="green"] {
     color: green;
+}
+
+.priority-flag[data-color="orange"] {
+    color: orange;
+}
+
+.priority-flag[data-color="red"] {
+    color: red;
 }
 
 .edit-icon {
