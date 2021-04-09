@@ -85,7 +85,7 @@ h1 {
     font-size: 1.2em;
 }
 
-#add-project-btn,
+#add-project-container,
 #projects li {
     padding: 0.6em 1em;
     border-radius: 5px;
@@ -93,16 +93,53 @@ h1 {
     color: white;
 }
 
-#add-project-btn:hover,
+#add-project-container:hover,
 #projects li:hover {
     cursor: pointer;
     background-color: rgba(20, 47, 105, 0.623);
 }
 
-#add-project-btn span {
+#add-project-container span {
     margin-left: 0.6em;
     font-size: 1.2em;
     display: inline-block;
+}
+
+#add-project-input {
+    border-radius: 5px;
+    background-color: rgba(20, 47, 105);
+    padding: 0.4em 0.6em;
+    display: none;
+}
+
+#add-project-input input {
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    padding: 0.2em 0.5em;
+    width: 81%;
+    font-size: 1.2em;
+}
+
+#add-project-input i {
+    color: white;
+    font-size: 1.2em;
+}
+
+#project-validate,
+#project-cancel {
+    margin-left: 0.7em;
+    margin-top: 0.2em;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    height: 100%;
+    outline: none;
+}
+
+#project-validate:active,
+#project-cancel:active {
+    transform: scale(0.9);
 }
 
 #content-area {
@@ -131,6 +168,7 @@ h1 {
 .task-add-btn {
     position: absolute;
     right: 0;
+    top: -15px;
     height: 45px;
     width: 45px;
     border-radius: 50%;
