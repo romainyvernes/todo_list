@@ -127,7 +127,9 @@ h1 {
 }
 
 #project-validate,
-#project-cancel {
+#project-cancel,
+#task-validate,
+#task-cancel {
     margin-left: 0.7em;
     margin-top: 0.2em;
     padding: 0;
@@ -138,8 +140,15 @@ h1 {
 }
 
 #project-validate:active,
-#project-cancel:active {
+#project-cancel:active,
+#task-validate:active,
+#task-cancel:active {
     transform: scale(0.9);
+}
+
+#task-validate,
+#task-cancel {
+    font-size: 1em;
 }
 
 #content-area {
@@ -151,17 +160,23 @@ h1 {
     overflow: auto;
 }
 
+#content-label {
+    font-size: 2em;
+    margin: 0;
+}
+
 .name-wrapper {
     display: flex;
     position: relative;
-    margin-top: 0.4em;
+    margin-top: 2.5em;
 }
 
 .name-wrapper i {
     font-size: 1.4em;
 }
 
-.name-wrapper h2 {
+.name-wrapper h3 {
+    font-size: 1.3em;
     margin: 0 0 0 0.5em;
 }
 
@@ -187,10 +202,10 @@ h1 {
 #content-area ul {
     margin-top: 2em;
     padding-right: 3em;
-    margin-bottom: 2.5em;
 }
 
-#content-area li {
+.task-wrapper,
+#new-task-container {
     list-style-type: none;
     margin: 0.8em 0;
     background-color: white;
@@ -198,6 +213,20 @@ h1 {
     border-radius: 5px;
     padding: 0.7em 1em;
     position: relative;
+}
+
+#new-task-container {
+    margin-left: 2.5em;
+    margin-right: 3em;
+    padding: 0.15em 1em 0.15em 2.1em;
+}
+
+#task-name {
+    border: 1px solid grey;
+    border-radius: 5px;
+    outline: none;
+    padding: 0.5em;
+    font-size: 1em;
 }
 
 .task-label {

@@ -2,7 +2,7 @@ import { Project, projectModule } from './projects';
 import { Task, taskModule } from './tasks';
 import display from './display';
 import { addDays, isWithinInterval } from 'date-fns';
-import { eventModule } from './events';
+import { eventModule, EventListener } from './events';
 
 const app = (() => {
 
@@ -44,7 +44,8 @@ const app = (() => {
         const contentContainer = document.getElementById('content-area');
         const sortedProjects = projectModule.sortByName(projectModule.getProjects());
         const sortedTasks = taskModule.sortByDate(taskModule.getTasks());
-        display.renderContentArea(contentContainer, sortedProjects, sortedTasks);
+        const label = document.querySelectorAll('#category-btns span')[0].textContent;
+        display.renderContentArea(contentContainer, sortedProjects, sortedTasks, label);
     };
 
     const filterTasksByTimespan = (tasks, startDate, endDate) => {
@@ -60,7 +61,7 @@ const app = (() => {
         return filteredTasks;
     };
 
-    const renderByTimespan = (startDate, endDate) => {
+    const renderByTimespan = (startDate, endDate, title) => {
         const contentContainer = document.getElementById('content-area');
         const tasks = filterTasksByTimespan(taskModule.getTasks(), startDate, 
                 endDate);
@@ -75,23 +76,24 @@ const app = (() => {
                     arr.push(project);
                     return arr;
                 }, []);
-        display.renderContentArea(contentContainer, projects, tasks);
+        display.renderContentArea(contentContainer, projects, tasks, title);
     };
 
     const renderToday = () => {
         const startDate = new Date().setHours(0, 0, 0, 0);
         const endDate = new Date().setHours(23, 59, 59, 999);
-        renderByTimespan(startDate, endDate);
+        const label = document.querySelectorAll('#category-btns span')[1].textContent;
+        renderByTimespan(startDate, endDate, label);
     };
 
     const renderWeek = () => {
         const startDate = new Date().setHours(0, 0, 0, 0);
         const endDate = addDays(startDate, 6).setHours(23, 59, 59, 999);
-        renderByTimespan(startDate, endDate);
+        const label = document.querySelectorAll('#category-btns span')[2].textContent;
+        renderByTimespan(startDate, endDate, label);
     };
 
-    const renderProjectById = (projectId) => {
-        const contentContainer = document.getElementById('content-area');
+    const renderProjectById = (target, projectId) => {
         const project = [projectModule.getProjectById(projectId)];
         let tasks = project[0].taskIds.reduce((arr, taskId) => {
             const task = taskModule.getTaskById(taskId);
@@ -99,7 +101,7 @@ const app = (() => {
             return arr;
         }, []);
         tasks = taskModule.sortByDate(tasks);
-        display.renderContentArea(contentContainer, project, tasks);
+        display.renderContentArea(target, project, tasks);
     };
 
     const clearContainer = (target) => {
@@ -128,9 +130,11 @@ const app = (() => {
         
         clearContainer(projectsContainer);
         renderProjects();
+        createProjectEvents();
+        eventModule.assignEvents();
 
         clearContainer(contentContainer);
-        renderProjectById(newProject.id);
+        renderProjectById(contentContainer, newProject.id);
     };
 
     const cancelAddProject = () => {
@@ -140,6 +144,31 @@ const app = (() => {
         display.showAddProjectBtn();
     };
 
+    const addTask = () => {
+        const taskWrapper = document.getElementById('new-task-container');
+        const projectId = taskWrapper.dataset.projectId;
+        const listWrapper = document.querySelector(`#content-area ul[data-project-id="${projectId}"]`);
+        const inputField = document.getElementById('task-name');
+
+        if (inputField.value === '') return;
+        
+        const newTask = Task(inputField.value);
+        newTask.projectId = projectId;
+        
+        const project = projectModule.getProjectById(projectId);
+        project.taskIds.push(newTask.id);
+        projectModule.updateProject(project);
+        
+        inputField.value = '';
+
+        clearContainer(listWrapper);
+        renderProjectById(listWrapper, projectId);
+    };
+
+    const cancelAddTask = () => {
+        return
+    };
+
     const createCategoryEvents = () => {
         const contentContainer = document.getElementById('content-area');
         const categories = document.querySelectorAll('#category-btns li');
@@ -147,16 +176,19 @@ const app = (() => {
         const EVENT_TRIGGER = 'click';
         
         const inboxBtn = categories[0];
-        eventModule.createEvent(inboxBtn, EVENT_TRIGGER, [clearContentContainer,
+        const inboxEvent = EventListener(inboxBtn, EVENT_TRIGGER, [clearContentContainer,
                 renderAllTasks]);
+        eventModule.createEvent(inboxEvent);
 
         const todayBtn = categories[1];
-        eventModule.createEvent(todayBtn, EVENT_TRIGGER, [clearContentContainer,
+        const todayEvent = EventListener(todayBtn, EVENT_TRIGGER, [clearContentContainer,
                 renderToday]);
+        eventModule.createEvent(todayEvent);
         
         const weekBtn = categories[2];
-        eventModule.createEvent(weekBtn, EVENT_TRIGGER, [clearContentContainer,
+        const weekEvent = EventListener(weekBtn, EVENT_TRIGGER, [clearContentContainer,
                 renderWeek]);
+        eventModule.createEvent(weekEvent);
 
         eventModule.assignEvents();
     };
@@ -169,28 +201,58 @@ const app = (() => {
 
         projects.forEach(project => {
             const renderProject = () => {
-                renderProjectById(project.dataset.projectId);
+                renderProjectById(contentContainer, project.dataset.projectId);
             };
-
-            eventModule.createEvent(project, EVENT_TRIGGER, [clearContentContainer,
+            const newEvent = EventListener(project, EVENT_TRIGGER, [clearContentContainer,
                     renderProject]);
+            eventModule.createEvent(newEvent);
         });
+    };
+
+    const createAddProjectEvent = () => {
+        const EVENT_TRIGGER = 'click';
 
         const projectBtn = document.getElementById('add-project-container');
-        eventModule.createEvent(projectBtn, EVENT_TRIGGER, [display.hideAddProjectBtn,
+        const projectEvent = EventListener(projectBtn, EVENT_TRIGGER, [display.hideAddProjectBtn,
                 display.showProjectInput]);
+        eventModule.createEvent(projectEvent);
 
-        
         const projectValidation = document.getElementById('project-validate');
-        eventModule.createEvent(projectValidation, EVENT_TRIGGER, [addProject]);
+        const validationEvent = EventListener(projectValidation, EVENT_TRIGGER, 
+                [addProject]);
+        eventModule.createEvent(validationEvent);
 
         const projectCancel = document.getElementById('project-cancel');
-        eventModule.createEvent(projectCancel, EVENT_TRIGGER, [cancelAddProject]);
+        const cancelEvent = EventListener(projectCancel, EVENT_TRIGGER, [cancelAddProject]);
+        eventModule.createEvent(cancelEvent);
+    };
+
+    const createAddTaskEvent = () => {
+        const EVENT_TRIGGER = 'click';
+        
+        const taskBtns = document.querySelectorAll('.task-add-btn');
+        taskBtns.forEach(taskBtn => {
+            const newEvent = EventListener(taskBtn, EVENT_TRIGGER);
+            const createTask = () => {display.createNewTask(newEvent.event.target.dataset.projectId)};
+            newEvent.functions.push(createTask);
+            eventModule.createEvent(newEvent);
+        });
+
+        const taskValidation = document.getElementById('task-validate');
+        const validationEvent = EventListener(taskValidation, EVENT_TRIGGER, 
+                [addTask]);
+        eventModule.createEvent(validationEvent);
+        /*
+        const taskCancel = document.getElementById('task-cancel');
+        const cancelEvent = EventListener(taskCancel, EVENT_TRIGGER, [cancelAddTask]);
+        eventModule.createEvent(cancelEvent);*/
     };
 
     const assignEvents = () => {
         createCategoryEvents();
         createProjectEvents();
+        createAddProjectEvent();
+        createAddTaskEvent();
         eventModule.assignEvents();
     };
 
@@ -204,7 +266,7 @@ window.onload = (event) => {
     app.renderCategories();
     setTimeout(() => {
         app.renderProjects();
-        app.assignEvents();
         app.renderAllTasks();
+        app.assignEvents();
     }, 11);
 };
