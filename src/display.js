@@ -29,17 +29,49 @@ const display = (() => {
         projects.id = 'projects';
         sideBar.appendChild(projects);
 
-        const addProjectBtn = document.createElement('div');
-        addProjectBtn.id = 'add-project-btn';
+        const addProjectContainer = document.createElement('div');
+        addProjectContainer.id = 'add-project-container';
+        
         const addIcon = document.createElement('i');
         addIcon.className = 'fas fa-plus';
-        const addSpan = document.createElement('span');
-        addSpan.textContent = 'Add project';
-        addProjectBtn.appendChild(addIcon);
-        addProjectBtn.appendChild(addSpan);
+        addProjectContainer.appendChild(addIcon);
         
-        sideBar.appendChild(addProjectBtn);
+        const addSpan = document.createElement('span');
+        addSpan.textContent = 'Add new project';
+        addProjectContainer.appendChild(addSpan);
+        
+        sideBar.appendChild(addProjectContainer);
 
+        const projectInputWrapper = document.createElement('div');
+        projectInputWrapper.id = 'add-project-input';
+
+        const projectInput = document.createElement('input');
+        projectInput.type = 'text';
+        projectInput.placeholder = 'Enter project name';
+        projectInput.maxLength = '30';
+        projectInputWrapper.appendChild(projectInput);
+
+        const projectValidateBtn = document.createElement('button');
+        projectValidateBtn.type = 'button';
+        projectValidateBtn.id = 'project-validate';
+
+        const projectValidateIcon = document.createElement('i');
+        projectValidateIcon.className= 'fas fa-check';
+        projectValidateBtn.appendChild(projectValidateIcon);
+
+        projectInputWrapper.appendChild(projectValidateBtn);
+
+        const projectCancelBtn = document.createElement('button');
+        projectCancelBtn.type = 'button';
+        projectCancelBtn.id = 'project-cancel';
+
+        const projectCancelIcon = document.createElement('i');
+        projectCancelIcon.className = 'fas fa-times';
+        projectCancelBtn.appendChild(projectCancelIcon);
+
+        projectInputWrapper.appendChild(projectCancelBtn);
+
+        sideBar.appendChild(projectInputWrapper);
 
         const contentArea = document.createElement('div');
         contentArea.id = 'content-area';
@@ -140,7 +172,28 @@ const display = (() => {
         });
     };
 
-    return {renderMain, populateSideBar, renderContentArea};
+    const showProjectInput = () => {
+        const projectInput = document.getElementById('add-project-input');
+        projectInput.style.display = 'block';
+    };
+
+    const showAddProjectBtn = () => {
+        const projectAdd = document.getElementById('add-project-container');
+        projectAdd.style.display = 'block';
+    };
+
+    const hideProjectInput = () => {
+        const projectInput = document.getElementById('add-project-input');
+        projectInput.style.display = 'none';
+    };
+
+    const hideAddProjectBtn = () => {
+        const projectAdd = document.getElementById('add-project-container');
+        projectAdd.style.display = 'none';
+    };
+
+    return {renderMain, populateSideBar, renderContentArea, showProjectInput,
+            showAddProjectBtn, hideProjectInput, hideAddProjectBtn};
 })();
 
 export default display;

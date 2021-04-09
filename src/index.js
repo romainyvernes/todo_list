@@ -2,6 +2,7 @@ import { Project, projectModule } from './projects';
 import { Task, taskModule } from './tasks';
 import display from './display';
 import { addDays, isWithinInterval } from 'date-fns';
+import { eventModule } from './events';
 
 const app = (() => {
 
@@ -101,61 +102,109 @@ const app = (() => {
         display.renderContentArea(contentContainer, project, tasks);
     };
 
-    const clearContentContainer = () => {
-        const contentContainer = document.getElementById('content-area');
-        let firstChild = contentContainer.firstElementChild;
+    const clearContainer = (target) => {
+        let firstChild = target.firstElementChild;
 
         while (firstChild) {
             firstChild.remove();
-            firstChild = contentContainer.firstElementChild;
+            firstChild = target.firstElementChild;
         }
     };
 
-    const assignCategoryEvents = () => {
-        const categories = document.querySelectorAll('#category-btns li');
-        const inboxBtn = categories[0];
-        const todayBtn = categories[1];
-        const weekBtn = categories[2];
+    const addProject = () => {
+        const contentContainer = document.getElementById('content-area');
+        const projectsContainer = document.getElementById('projects');
+        const inputField = document.querySelector('#add-project-input input');
 
-        inboxBtn.addEventListener('click', event => {
-            clearContentContainer();
-            renderAllTasks();
-        });
+        if (inputField.value === '') return;
+        
+        const newProject = Project(inputField.value);
+        projectModule.addProject(newProject);
+        
+        inputField.value = '';
+        
+        display.hideProjectInput();
+        display.showAddProjectBtn();
+        
+        clearContainer(projectsContainer);
+        renderProjects();
 
-        todayBtn.addEventListener('click', event => {
-            clearContentContainer();
-            renderToday();
-        });
-
-        weekBtn.addEventListener('click', event => {
-            clearContentContainer();
-            renderWeek();
-        });
+        clearContainer(contentContainer);
+        renderProjectById(newProject.id);
     };
 
-    const assignProjectEvents = () => {
+    const cancelAddProject = () => {
+        const inputField = document.querySelector('#add-project-input input');
+        inputField.value = '';
+        display.hideProjectInput();
+        display.showAddProjectBtn();
+    };
+
+    const createCategoryEvents = () => {
+        const contentContainer = document.getElementById('content-area');
+        const categories = document.querySelectorAll('#category-btns li');
+        const clearContentContainer = () => {clearContainer(contentContainer)};
+        const EVENT_TRIGGER = 'click';
+        
+        const inboxBtn = categories[0];
+        eventModule.createEvent(inboxBtn, EVENT_TRIGGER, [clearContentContainer,
+                renderAllTasks]);
+
+        const todayBtn = categories[1];
+        eventModule.createEvent(todayBtn, EVENT_TRIGGER, [clearContentContainer,
+                renderToday]);
+        
+        const weekBtn = categories[2];
+        eventModule.createEvent(weekBtn, EVENT_TRIGGER, [clearContentContainer,
+                renderWeek]);
+
+        eventModule.assignEvents();
+    };
+
+    const createProjectEvents = () => {
+        const contentContainer = document.getElementById('content-area');
         const projects = document.querySelectorAll('#projects li');
+        const clearContentContainer = () => {clearContainer(contentContainer)};
+        const EVENT_TRIGGER = 'click';
 
         projects.forEach(project => {
-            project.addEventListener('click', event => {
-                clearContentContainer();
+            const renderProject = () => {
                 renderProjectById(project.dataset.projectId);
-            });
+            };
+
+            eventModule.createEvent(project, EVENT_TRIGGER, [clearContentContainer,
+                    renderProject]);
         });
+
+        const projectBtn = document.getElementById('add-project-container');
+        eventModule.createEvent(projectBtn, EVENT_TRIGGER, [display.hideAddProjectBtn,
+                display.showProjectInput]);
+
+        
+        const projectValidation = document.getElementById('project-validate');
+        eventModule.createEvent(projectValidation, EVENT_TRIGGER, [addProject]);
+
+        const projectCancel = document.getElementById('project-cancel');
+        eventModule.createEvent(projectCancel, EVENT_TRIGGER, [cancelAddProject]);
     };
 
-    return {renderMain, renderProjects, renderCategories, renderAllTasks, 
-            assignCategoryEvents, assignProjectEvents};
+    const assignEvents = () => {
+        createCategoryEvents();
+        createProjectEvents();
+        eventModule.assignEvents();
+    };
+
+    return {renderMain, renderProjects, renderCategories, renderAllTasks,
+            assignEvents};
 })();
 
 
 window.onload = (event) => {
     app.renderMain();
     app.renderCategories();
-    app.assignCategoryEvents();
     setTimeout(() => {
         app.renderProjects();
-        app.assignProjectEvents();
+        app.assignEvents();
         app.renderAllTasks();
     }, 11);
 };
