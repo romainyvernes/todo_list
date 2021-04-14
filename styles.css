@@ -128,8 +128,8 @@ h1 {
 
 #project-validate,
 #project-cancel,
-#task-validate,
-#task-cancel {
+#new-task-validate,
+#new-task-cancel {
     margin-left: 0.7em;
     margin-top: 0.2em;
     padding: 0;
@@ -141,14 +141,15 @@ h1 {
 
 #project-validate:active,
 #project-cancel:active,
-#task-validate:active,
-#task-cancel:active {
-    transform: scale(0.9);
+#new-task-validate:active,
+#new-task-cancel:active {
+    transform: scale(0.8);
 }
 
-#task-validate,
-#task-cancel {
+#new-task-validate,
+#new-task-cancel {
     font-size: 1em;
+    margin-top: 0; 
 }
 
 #content-area {
@@ -176,14 +177,14 @@ h1 {
 }
 
 .name-wrapper h3 {
-    font-size: 1.3em;
+    font-size: 1.4em;
     margin: 0 0 0 0.5em;
 }
 
 .task-add-btn {
     position: absolute;
     right: 0;
-    top: -15px;
+    top: -13px;
     height: 45px;
     width: 45px;
     border-radius: 50%;
@@ -215,18 +216,52 @@ h1 {
     position: relative;
 }
 
-#new-task-container {
+#new-task-container,
+#edit-task-container {
     margin-left: 2.5em;
     margin-right: 3em;
-    padding: 0.15em 1em 0.15em 2.1em;
+    padding: 0.05em 2em 0.05em 2.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#task-name {
+#edit-task-container {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#new-task-name {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 0.3em;
+    font-size: 1em;
+}
+
+#new-task-due-date {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 0.1em 0.5em;
+}
+
+#new-task-date-reset {
+    margin-left: 0.5em;
+    padding: 0.2em 0.4em;
     border: 1px solid grey;
     border-radius: 5px;
     outline: none;
-    padding: 0.5em;
-    font-size: 1em;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]:checked + i {
+    transform: scale(1.3);
+}
+
+#new-task-priority-wrapper i {
+    margin: 0.7em 0.2em;
 }
 
 .task-label {
@@ -252,19 +287,22 @@ h1 {
     right: 4em;
 }
 
-.priority-flag[data-color="green"] {
+.low-priority {
     color: green;
 }
 
-.priority-flag[data-color="orange"] {
+.medium-priority {
     color: orange;
 }
 
-.priority-flag[data-color="red"] {
+.high-priority {
     color: red;
 }
 
-.edit-icon {
+.task-edit-btn {
     float: right;
     color: rgba(35, 163, 248);
+    border: none;
+    background-color: transparent;
+    outline: none;
 }
