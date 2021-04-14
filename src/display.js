@@ -138,19 +138,42 @@ const display = (() => {
                 if (task.projectId === project.id) return true;
                 return false;
             });
-            projectTasks.map(task => {
-                renderTask(listWrapper, task);
-            });
+            renderTaskList(listWrapper, projectTasks);
 
             target.appendChild(nameWrapper);
             target.appendChild(listWrapper);
         });
+
+        if (!title) {
+            const nameWrapper = document.querySelector('.name-wrapper');
+            nameWrapper.style.marginTop = '0.5em';
+
+            const projectIcon = document.querySelector('.name-wrapper i');
+            projectIcon.style.fontSize = '1.9em';
+
+            const projectName = document.querySelector('.name-wrapper h3');
+            projectName.style.fontSize = '2em';
+        }
+    };
+
+    const renderTaskList = (target, tasks) => {
+        tasks.map(task => {
+            renderTask(target, task);
+        });
     };
 
     const renderTask = (target, task) => {
-        const taskWrapper = document.createElement('li');
-        taskWrapper.className = 'task-wrapper';
-
+        let taskWrapper;
+        
+        if (!target.matches('li')) {
+            taskWrapper = document.createElement('li');
+            taskWrapper.dataset.taskId = task.id;
+            taskWrapper.className = 'task-wrapper';
+        } else {
+            target.removeAttribute('id');
+            taskWrapper = target;
+        }
+        
         const circle = document.createElement('span');
         circle.className = 'check-circle';
         taskWrapper.appendChild(circle);
@@ -173,17 +196,23 @@ const display = (() => {
         priorityWrapper.className = 'priority-level';
 
         const flagIcon = document.createElement('i');
-        flagIcon.className = 'priority-flag fab fa-font-awesome-flag';
-        flagIcon.dataset.color = 'green';
+        flagIcon.className = `${task.priority}-priority fab fa-font-awesome-flag`;
         priorityWrapper.appendChild(flagIcon);
         
         taskWrapper.appendChild(priorityWrapper);
 
-        const editIcon = document.createElement('i');
-        editIcon.className = 'far fa-edit edit-icon';
-        taskWrapper.appendChild(editIcon);
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'task-edit-btn';
+        editBtn.dataset.taskId = task.id;
 
-        target.appendChild(taskWrapper);
+        const editIcon = document.createElement('i');
+        editIcon.className = 'far fa-edit';
+        editBtn.appendChild(editIcon);
+
+        taskWrapper.appendChild(editBtn);
+
+        if (!target.matches('li')) target.appendChild(taskWrapper);
     };
 
     const showProjectInput = () => {
@@ -206,46 +235,103 @@ const display = (() => {
         projectAdd.style.display = 'none';
     };
 
-    const createNewTask = (projectId) => {
-        const projectContainer = document.querySelector(`#content-area ul[data-project-id="${projectId}"]`);
-        
-        const newTaskWrapper = document.createElement('li');
-        newTaskWrapper.id = 'new-task-container';
-        newTaskWrapper.dataset.projectId = projectId;
-        
+    const renderNewTask = (target, task=null) => {
+        if (task) {
+            target.id = 'edit-task-container';
+        }
+
         const taskName = document.createElement('input');
-        taskName.id = 'task-name';
+        taskName.id = 'new-task-name';
         taskName.type = 'text';
         taskName.placeholder = 'Enter task name here'
         taskName.maxLength = '40';
-        newTaskWrapper.appendChild(taskName);
+        if (task) taskName.value = task.name;
+        target.appendChild(taskName);
+
+        const dateWrapper = document.createElement('div');
+
+        const dueDate = document.createElement('input');
+        dueDate.id = 'new-task-due-date';
+        dueDate.type = 'date';
+        if (task && task.dueDate !== '') {
+            dueDate.value = format(task.dueDate, 'yyyy-MM-dd');
+        } else {
+            dueDate.value = '';
+        }
+        dateWrapper.appendChild(dueDate);
+
+        const resetDate = document.createElement('button');
+        resetDate.type = 'button'
+        resetDate.id = 'new-task-date-reset';
+        resetDate.textContent = 'Clear';
+        dateWrapper.appendChild(resetDate);
+
+        target.appendChild(dateWrapper);
+
+        const priorityWrapper = document.createElement('div');
+        priorityWrapper.id = 'new-task-priority-wrapper';
+        
+        const PRIORITY_LEVELS = ['low', 'medium', 'high'];
+        PRIORITY_LEVELS.map((level, index) => {
+            const flagWrapper = document.createElement('label');
+            
+            const flagInput = document.createElement('input');
+            flagInput.type = 'radio';
+            flagInput.name = 'priority';
+            flagInput.value = level;
+            if (task && task.priority === level) {
+                flagInput.checked = true;
+            }
+            if (index === 0 && !task) flagInput.checked = true;
+            flagWrapper.appendChild(flagInput);
+
+            const flagIcon = document.createElement('i');
+            flagIcon.className = `${level}-priority fab fa-font-awesome-flag`;
+            flagWrapper.appendChild(flagIcon);
+
+            priorityWrapper.appendChild(flagWrapper);
+        });
+
+        target.appendChild(priorityWrapper);
+
+        const btnWrapper = document.createElement('div');
 
         const taskValidateBtn = document.createElement('button');
         taskValidateBtn.type = 'button';
-        taskValidateBtn.id = 'task-validate';
+        taskValidateBtn.id = 'new-task-validate';
 
         const taskValidateIcon = document.createElement('i');
         taskValidateIcon.className= 'fas fa-check';
         taskValidateBtn.appendChild(taskValidateIcon);
-
-        newTaskWrapper.appendChild(taskValidateBtn);
+        
+        btnWrapper.appendChild(taskValidateBtn);
 
         const taskCancelBtn = document.createElement('button');
         taskCancelBtn.type = 'button';
-        taskCancelBtn.id = 'task-cancel';
+        taskCancelBtn.id = 'new-task-cancel';
 
         const taskCancelIcon = document.createElement('i');
         taskCancelIcon.className = 'fas fa-times';
         taskCancelBtn.appendChild(taskCancelIcon);
+        
+        btnWrapper.appendChild(taskCancelBtn);
 
-        newTaskWrapper.appendChild(taskCancelBtn);
+        target.appendChild(btnWrapper);
+    };
 
-        projectContainer.after(newTaskWrapper);
+    const createNewTask = (target, projectId) => {
+        const newTaskWrapper = document.createElement('li');
+        newTaskWrapper.id = 'new-task-container';
+        newTaskWrapper.dataset.projectId = projectId;
+
+        renderNewTask(newTaskWrapper);
+
+        target.after(newTaskWrapper);
     };
 
     return {renderMain, populateSideBar, renderContentArea, showProjectInput,
             showAddProjectBtn, hideProjectInput, hideAddProjectBtn, createNewTask,
-            renderTask};
+            renderTask, renderTaskList, renderNewTask};
 })();
 
 export default display;

@@ -1,14 +1,13 @@
 import { compareAsc } from 'date-fns'
 
-const Task = (name) => {
+const Task = (name, dueDate='', priority='', projectId='') => {
     name = name;
-    let dueDate = '';
-    let priority = '';
-    let projectId = '';
-    let notes = '';
+    dueDate = dueDate;
+    priority = priority;
+    projectId = projectId;
     let id = Date.now();
 
-    return {name, dueDate, priority, projectId, notes, id};
+    return {name, dueDate, priority, projectId, id};
 };
 
 const taskModule = (() => {
@@ -25,7 +24,7 @@ const taskModule = (() => {
 
     const getTaskById = (taskId) => {
         for (let i = 0; i < tasks.length; i++) {
-            if (tasks[i].id == taskId) {
+            if (tasks[i].id === taskId) {
                 return tasks[i];
             }
         }

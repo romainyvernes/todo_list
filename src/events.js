@@ -2,29 +2,16 @@ const EventListener = (target, name, functions=[]) => {
     target = target;
     name = name;
     functions = functions;
-    let event;
 
-    return {target, name, functions, event};
-};
-
-const eventModule = (() => {
-
-    let events = [];
-
-    const createEvent = (event) => {
-        events.push(event);
-    };
-
-    const assignEvents = () => {
-        events.map(event => {
-            event.target.addEventListener(event.name, e => {
-                event.event = e;
-                event.functions.map(eventFunction => eventFunction());
-            });
+    const assignEvent = () => {
+        target.addEventListener(name, function (e) {
+            for (let i = 0; i < functions.length; i++) {
+                functions[i](e);
+            }
         });
     };
 
-    return {createEvent, assignEvents};
-})();
+    return {target, name, functions, assignEvent};
+};
 
-export { eventModule, EventListener };
+export { EventListener };

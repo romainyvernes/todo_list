@@ -1,8 +1,8 @@
 import {Task, taskModule} from './tasks';
 
-const Project = (name) => {
+const Project = (name, taskIds=[]) => {
     name = name;
-    let taskIds = [];
+    taskIds = taskIds;
     let id = Date.now();
 
     return {name, taskIds, id};
@@ -22,7 +22,7 @@ const projectModule = (() => {
 
     const getProjectById = (projectId) => {
         for (let i = 0; i < projects.length; i++) {
-            if (projects[i].id == projectId) {
+            if (projects[i].id === projectId) {
                 return projects[i];
             }
         }
@@ -67,12 +67,12 @@ const projectModule = (() => {
 const scriptProject = Project('Write script');
 projectModule.addProject(scriptProject);
 
-const task1 = Task('Buy binder');
-const task2 = Task('Do research');
-task1.projectId = scriptProject.id;
-task2.projectId = scriptProject.id;
+const task1 = Task('Buy binder', '', 'low', scriptProject.id);
+const task2 = Task('Do research', new Date(2021, 3, 12), 'low',
+        scriptProject.id);
+
 task2.id = task2.id + 1;
-task2.dueDate = new Date(2021, 3, 8);
+
 taskModule.addTask(task1);
 taskModule.addTask(task2);
 
@@ -82,18 +82,16 @@ setTimeout(() => {
     const homeworkProject = Project('Do homework');
     projectModule.addProject(homeworkProject);
 
-    const task3 = Task('Write English essay');
-    const task4 = Task('Study math exam');
+    const task3 = Task('Write English essay', new Date(2021, 3, 10), 'low',
+            homeworkProject.id);
+    const task4 = Task('Study math exam', new Date(2021, 3, 11), 'low',
+            homeworkProject.id);
     task4.id = task4.id + 1;
-    task4.projectId = homeworkProject.id;
-    task4.dueDate = new Date(2021, 3, 11);
+
     taskModule.addTask(task4);
     homeworkProject.taskIds.push(task4.id);
 
-    task3.projectId = homeworkProject.id;
-    task3.dueDate = new Date(2021, 3, 10);
     taskModule.addTask(task3);
-
     homeworkProject.taskIds.push(task3.id);
     
 }, 10);
