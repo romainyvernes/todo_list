@@ -40,7 +40,8 @@ const app = (() => {
 
     const renderAllTasks = (target) => {
         const sortedProjects = projectModule.sortByName(projectModule.getProjects());
-        const sortedTasks = taskModule.sortByDate(taskModule.getTasks());
+        let sortedTasks = taskModule.sortByPriority(taskModule.getTasks());
+        sortedTasks = taskModule.sortByDate(sortedTasks);
         const label = document.querySelectorAll('#category-btns span')[0].textContent;
         display.renderContentArea(target, sortedProjects, sortedTasks, label);
     };
@@ -96,6 +97,7 @@ const app = (() => {
             arr.push(task);
             return arr;
         }, []);
+        tasks = taskModule.sortByPriority(tasks);
         tasks = taskModule.sortByDate(tasks);
         display.renderContentArea(target, project, tasks);
     };
@@ -181,10 +183,11 @@ const app = (() => {
         project.taskIds.push(newTask.id);
         projectModule.updateProject(project);
         
-        const newTasksList = taskModule.sortByDate(project.taskIds.reduce((arr, id) => {
+        let newTasksList = taskModule.sortByPriority(project.taskIds.reduce((arr, id) => {
             arr.push(taskModule.getTaskById(id));
             return arr;
         }, []));
+        newTasksList = taskModule.sortByDate(newTasksList);
 
         display.clearContainer(listWrapper);
         display.deleteElement(addTaskWrapper);
@@ -463,8 +466,33 @@ const app = (() => {
         createEvent(deleteBtns, EVENT_TRIGGER, [remove, clearDOM]);
     };
 
+    const createSideBarToggleEvent = () => {
+        const hamburgerBtn = document.getElementById('hamburger-logo');
+        const sideBar = document.getElementById('side-bar');
+        const EVENT_TRIGGER = 'click';
+        const show = () => {
+            display.showSideBar(sideBar);
+        };
+        const removeShow = () => {
+            hamburgerBtn.removeEventListener(EVENT_TRIGGER, show);
+        };
+        const hide = () => {
+            display.hideSideBar(sideBar);
+        };
+        const removeHide = () => {
+            hamburgerBtn.removeEventListener(EVENT_TRIGGER, hide);
+        };
+        const hideEvent = () => {
+            createEvent([hamburgerBtn], EVENT_TRIGGER, [hide, removeHide, 
+                createSideBarToggleEvent]);
+        };
+
+        createEvent([hamburgerBtn], EVENT_TRIGGER, [show, removeShow, hideEvent]);
+    };
+
     // links all events upon load. Only meant to be used once.
     const assignInitialEvents = () => {
+        createSideBarToggleEvent();
         createCategoryEvents();
         createProjectEvents();
         createDeleteProjectEvent();
@@ -503,7 +531,7 @@ const app = (() => {
         tasks.forEach(task => {
             task.id = parseInt(task.id);
             task.projectId = parseInt(task.projectId);
-            task.dueDate = parseJSON(task.dueDate);
+            if (task.dueDate !== '') task.dueDate = parseJSON(task.dueDate);
             taskModule.addTask(task);
         });
 

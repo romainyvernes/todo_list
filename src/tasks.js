@@ -75,8 +75,21 @@ const taskModule = (() => {
         });
     };
 
+    const sortByPriority = (tasks) => {
+        return tasks.sort((task1, task2) => {
+            const task1Priority = task1.priority;
+            const task2Priority = task2.priority;
+
+            if (task1Priority === task2Priority) return 0;
+            if (task1Priority === 'high') return -1;
+            if (task1Priority === 'low') return 1;
+            if (task1Priority === 'medium' && task2Priority === 'high') return 1;
+            if (task1Priority === 'medium' && task2Priority === 'low') return 1;
+        });
+    };
+
     return {addTask, getTasks, getTaskById, updateTask, deleteTask, sortByDate, 
-            sortByName}
+            sortByName, sortByPriority}
 })();
 
 export {Task, taskModule};

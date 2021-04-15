@@ -13,6 +13,14 @@ const display = (() => {
         h1.textContent = 'My Todo';
         header.appendChild(h1);
 
+        const barsBtn = document.createElement('button');
+        barsBtn.id = 'hamburger-logo';
+
+        const barsIcon = document.createElement('i');
+        barsIcon.className = 'fas fa-bars';
+        barsBtn.appendChild(barsIcon);
+        
+        header.appendChild(barsBtn);
 
         const sideBar = document.createElement('div');
         sideBar.id = 'side-bar';
@@ -365,10 +373,22 @@ const display = (() => {
         }, delay);
     };
 
+    const showSideBar = (target) => {
+        const hamburgerLogo = document.getElementById('hamburger-logo');
+        hamburgerLogo.style.transform = 'rotate(90deg)';
+        target.style.transform = 'translateX(-300px)';
+    };
+
+    const hideSideBar = (target) => {
+        const hamburgerLogo = document.getElementById('hamburger-logo');
+        hamburgerLogo.style.transform = 'rotate(0deg)';
+        target.style.transform = 'translateX(300px)';
+    };
+
     return {renderMain, populateSideBar, renderContentArea, showProjectInput,
             showAddProjectBtn, hideProjectInput, hideAddProjectBtn, createNewTask,
             renderTask, renderTaskList, renderNewTask, clearContainer,
-            deleteElement, createFadeOut};
+            deleteElement, createFadeOut, showSideBar, hideSideBar};
 })();
 
 export default display;
