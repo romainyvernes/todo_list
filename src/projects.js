@@ -1,5 +1,3 @@
-import {Task, taskModule} from './tasks';
-
 const Project = (name, taskIds=[]) => {
     name = name;
     taskIds = taskIds;
@@ -61,40 +59,5 @@ const projectModule = (() => {
     return {addProject, getProjects, updateProject, deleteProject, sortByName,
             getProjectById}
 })();
-
-// Test data
-
-const scriptProject = Project('Write script');
-projectModule.addProject(scriptProject);
-
-const task1 = Task('Buy binder', '', 'low', scriptProject.id);
-const task2 = Task('Do research', new Date(2021, 3, 12), 'low',
-        scriptProject.id);
-
-task2.id = task2.id + 1;
-
-taskModule.addTask(task1);
-taskModule.addTask(task2);
-
-scriptProject.taskIds.push(task1.id, task2.id);
-
-setTimeout(() => {
-    const homeworkProject = Project('Do homework');
-    projectModule.addProject(homeworkProject);
-
-    const task3 = Task('Write English essay', new Date(2021, 3, 10), 'low',
-            homeworkProject.id);
-    const task4 = Task('Study math exam', new Date(2021, 3, 11), 'low',
-            homeworkProject.id);
-    task4.id = task4.id + 1;
-
-    taskModule.addTask(task4);
-    homeworkProject.taskIds.push(task4.id);
-
-    taskModule.addTask(task3);
-    homeworkProject.taskIds.push(task3.id);
-    
-}, 10);
-
 
 export {Project, projectModule};

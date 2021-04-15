@@ -1,7 +1,7 @@
 import { Project, projectModule } from './projects';
 import { Task, taskModule } from './tasks';
 import display from './display';
-import { addDays, isWithinInterval, parseISO } from 'date-fns';
+import { addDays, isWithinInterval, parseISO, parseJSON } from 'date-fns';
 import { EventListener } from './events';
 
 const app = (() => {
@@ -12,9 +12,9 @@ const app = (() => {
 
     const renderCategories = (target) => {
         const CATEGORIES = [
-            {label: 'All tasks', iconClass: 'fas fa-inbox'},
-            {label: 'Today', iconClass: 'fas fa-calendar-day'},
-            {label: 'Next 7 days', iconClass: 'fas fa-calendar-week'}
+            {label: 'All tasks', icon1Class: 'fas fa-inbox'},
+            {label: 'Today', icon1Class: 'fas fa-calendar-day'},
+            {label: 'Next 7 days', icon1Class: 'fas fa-calendar-week'}
         ];
         display.populateSideBar(target, CATEGORIES);
     };
@@ -27,7 +27,8 @@ const app = (() => {
             projects.map(project => {
                 const projectObj = {
                     label: project.name, 
-                    iconClass: 'fas fa-folder-open',
+                    icon1Class: 'fas fa-folder-open',
+                    icon2Class: 'fas fa-trash-alt',
                     projectId: project.id
                 };
                 projectArray.push(projectObj);
@@ -99,15 +100,6 @@ const app = (() => {
         display.renderContentArea(target, project, tasks);
     };
 
-    const clearContainer = (target) => {
-        let firstChild = target.firstElementChild;
-
-        while (firstChild) {
-            firstChild.remove();
-            firstChild = target.firstElementChild;
-        }
-    };
-
     const addProject = () => {
         const contentContainer = document.getElementById('content-area');
         const projectsContainer = document.getElementById('projects');
@@ -123,13 +115,25 @@ const app = (() => {
         display.hideProjectInput();
         display.showAddProjectBtn();
         
-        clearContainer(projectsContainer);
+        display.clearContainer(projectsContainer);
         renderProjects(projectsContainer);
         createProjectEvents();
+        createDeleteProjectEvent();
 
-        clearContainer(contentContainer);
+        display.clearContainer(contentContainer);
         renderProjectById(contentContainer, newProject.id);
         createAddTaskEvent();
+        createUpdateTaskEvent();
+        createDeleteTaskEvent();
+
+        storeData();
+    };
+
+    const deleteProject = (projectId) => {
+        const projectToDelete = projectModule.getProjectById(projectId);
+        projectToDelete.taskIds.map(id => taskModule.deleteTask(id));
+        projectModule.deleteProject(projectId);
+        storeData();
     };
 
     const cancelAddProject = () => {
@@ -147,7 +151,8 @@ const app = (() => {
         let date = document.getElementById('new-task-due-date').value;
         if (date !== '') date = parseISO(date);
         
-        const priorityFlags = document.querySelectorAll('#new-task-priority-wrapper input[type="radio"]');
+        const priorityFlags = document.querySelectorAll(
+            '#new-task-priority-wrapper input[type="radio"]');
         let selectedPriority;
         for (let i = 0; i < priorityFlags.length; i++) {
             if (priorityFlags[i].checked) {
@@ -167,7 +172,8 @@ const app = (() => {
         const newTask = collectTaskData(projectId);
         if (!newTask) return;
         
-        const listWrapper = document.querySelector(`#content-area ul[data-project-id="${projectId}"]`);
+        const listWrapper = document.querySelector(
+            `#content-area ul[data-project-id="${projectId}"]`);
         
         taskModule.addTask(newTask);
         
@@ -180,10 +186,11 @@ const app = (() => {
             return arr;
         }, []));
 
-        clearContainer(listWrapper);
-        addTaskWrapper.remove();
+        display.clearContainer(listWrapper);
+        display.deleteElement(addTaskWrapper);
 
         display.renderTaskList(listWrapper, newTasksList);
+        storeData();
     };
 
     const updateTask = () => {
@@ -196,22 +203,35 @@ const app = (() => {
         
         taskModule.updateTask(updatedTask);
         
-        clearContainer(editTaskWrapper);
+        display.clearContainer(editTaskWrapper);
         display.renderTask(editTaskWrapper, updatedTask);
+        storeData();
     };
 
     const createUpdateTask = (target) => {
         const taskId = parseInt(target.dataset.taskId);
         const taskToUpdate = taskModule.getTaskById(taskId);
         
-        clearContainer(target);
+        display.clearContainer(target);
 
         display.renderNewTask(target, taskToUpdate);
     };
 
-    const cancelNewAddTask = () => {
-        const newTaskWrapper = document.getElementById('new-task-container');
-        newTaskWrapper.remove();
+    const deleteTask = (taskId) => {
+        const taskToDelete = taskModule.getTaskById(taskId);
+        const projectToUpdate = projectModule.getProjectById(
+            taskToDelete.projectId);
+
+        for (let i = 0; i < projectToUpdate.taskIds.length; i++) {
+            if (projectToUpdate.taskIds[i] === taskId) {
+                projectToUpdate.taskIds.splice(i, 1);
+                break;
+            }
+        }
+        
+        projectModule.updateProject(projectToUpdate);
+        taskModule.deleteTask(taskId);
+        storeData();
     };
 
     const cancelEditAddTask = () => {
@@ -219,120 +239,129 @@ const app = (() => {
         const taskId = parseInt(editTaskWrapper.dataset.taskId);
         const task = taskModule.getTaskById(taskId);
 
-        clearContainer(editTaskWrapper);
+        display.clearContainer(editTaskWrapper);
         display.renderTask(editTaskWrapper, task);
     };
     
     // links each category button (all tasks, today, next 7 days) to its
     // corresponding events
+    const createEvent = (targets, trigger, functions) => {
+        if (targets) {
+            targets.forEach(target => {
+                const newEvent = EventListener(target, trigger, functions);
+                newEvent.assignEvent();
+            });
+        }
+    };
+
     const createCategoryEvents = () => {
         const contentContainer = document.getElementById('content-area');
         const categories = document.querySelectorAll('#category-btns li');
         
         const EVENT_TRIGGER = 'click';
-        const clearContentContainer = () => {clearContainer(contentContainer)};
         
-        const inboxBtn = categories[0];
+        const clearContentContainer = () => {display.clearContainer(contentContainer)};
         const renderTasks = () => {renderAllTasks(contentContainer)};
-        const inboxEvent = EventListener(inboxBtn, EVENT_TRIGGER, [clearContentContainer,
-                renderTasks, createAddTaskEvent, createUpdateTaskEvent]);
-        inboxEvent.assignEvent();
-
-        const todayBtn = categories[1];
         const renderDay = () => {renderToday(contentContainer)};
-        const todayEvent = EventListener(todayBtn, EVENT_TRIGGER, [clearContentContainer,
-                renderDay, createAddTaskEvent, createUpdateTaskEvent]);
-        todayEvent.assignEvent();
-        
-        const weekBtn = categories[2];
         const render7Days = () => {renderWeek(contentContainer)};
-        const weekEvent = EventListener(weekBtn, EVENT_TRIGGER, [clearContentContainer,
-                render7Days, createAddTaskEvent, createUpdateTaskEvent]);
-        weekEvent.assignEvent();
+
+        const commonFunctions = [clearContentContainer, createAddTaskEvent, createUpdateTaskEvent,
+            createDeleteTaskEvent];
+        const specificFunctions = [renderTasks, renderDay, render7Days];
+
+        categories.forEach((category, index) => {
+            createEvent([category], EVENT_TRIGGER, [...commonFunctions.slice(0, 1), 
+                specificFunctions[index], ...commonFunctions.slice(1)]);
+        });
     };
 
     // links each project button in side bar to corresponding events
     const createProjectEvents = () => {
         const contentContainer = document.getElementById('content-area');
-        const projects = document.querySelectorAll('#projects li');
-        const clearContentContainer = () => {clearContainer(contentContainer)};
+        const projects = document.querySelectorAll('#projects span');
         const EVENT_TRIGGER = 'click';
-
-        if (projects) {
-            projects.forEach(project => {
-                const renderProject = () => {
-                    renderProjectById(contentContainer, parseInt(project.dataset.projectId));
-                };
-                const newEvent = EventListener(project, EVENT_TRIGGER, [clearContentContainer,
-                        renderProject, createAddTaskEvent, createUpdateTaskEvent]);
-                newEvent.assignEvent();
-            });
-        }
+        
+        const clearContentContainer = () => {
+            display.clearContainer(contentContainer)
+        };
+        const renderProject = (event) => {
+            const projectId = event.target.dataset.projectId ||
+                event.target.parentElement.dataset.projectId;
+            renderProjectById(contentContainer, parseInt(projectId));
+        };
+        
+        createEvent(projects, EVENT_TRIGGER, [clearContentContainer, 
+            renderProject, createAddTaskEvent, createUpdateTaskEvent,
+            createDeleteTaskEvent]);
     };
 
     // links "add new project" button corresponding events
     const createAddProjectEvent = () => {
+        const projectBtn = document.getElementById('add-project-container');
         const EVENT_TRIGGER = 'click';
 
         const validate = () => {
             const validationBtn = document.getElementById('project-validate');
-            createProjectValidationEvent(validationBtn);
+            createEvent([validationBtn], EVENT_TRIGGER, [addProject]);
         };
         const cancel = () => {
             const cancelBtn = document.getElementById('project-cancel');
-            createProjectCancelEvent(cancelBtn);
+            createEvent([cancelBtn], EVENT_TRIGGER, [cancelAddProject]);
         };
 
-        const projectBtn = document.getElementById('add-project-container');
-        const projectEvent = EventListener(projectBtn, EVENT_TRIGGER, [display.hideAddProjectBtn,
-                display.showProjectInput, validate, cancel]);
-        projectEvent.assignEvent();
+        createEvent([projectBtn], EVENT_TRIGGER, [display.hideAddProjectBtn,
+            display.showProjectInput, validate, cancel]);
+        
     };
 
-    // creates event that adds new project button upon clicking check mark
-    const createProjectValidationEvent = (target) => {
+    const createDeleteProjectEvent = () => {
+        const deleteBtns = document.querySelectorAll('.delete-project');
+        const contentArea = document.getElementById('content-area');
         const EVENT_TRIGGER = 'click';
-        const validationEvent = EventListener(target, EVENT_TRIGGER, 
-            [addProject]);
-        validationEvent.assignEvent();
-    };
+        const remove = (event) => {
+            const projectId = event.target.parentElement.parentElement
+                .dataset.projectId;
+            deleteProject(parseInt(projectId));
+        };
+        const clear = (event) => {
+            const projectId = parseInt(event.target.parentElement.parentElement
+                .dataset.projectId);
+            const projectEl = document.querySelector(
+                `#projects li[data-project-id="${projectId}"]`);
+            display.deleteElement(projectEl);
+            display.clearContainer(contentArea);
+        };
+        const renderHome = () => {
+            renderAllTasks(contentArea);
+        };
 
-    // creates event that resets "add new project" button upon clicking x mark
-    const createProjectCancelEvent = (target) => {
-        const EVENT_TRIGGER = 'click';
-        const cancelEvent = EventListener(target, EVENT_TRIGGER, [cancelAddProject]);
-        cancelEvent.assignEvent();
+        createEvent(deleteBtns, EVENT_TRIGGER, [remove, clear, renderHome]);
     };
 
     const createNewTaskEvent = (btns, eventFunction) => {
         const EVENT_TRIGGER = 'click';
 
-        if (btns) {
-            btns.forEach(btn => {
-                const clear = () => {
-                    const clearBtn = document.getElementById('new-task-date-reset');
-                    createClearDateEvent(clearBtn);
-                };
-                const validate = () => {
-                    const validationBtn = document.getElementById('new-task-validate');
-                    validateTaskEvent(validationBtn);
-                };
-                const cancel = () => {
-                    const cancelBtn = document.getElementById('new-task-cancel');
-                    cancelTaskEvent(cancelBtn);
-                };
-                const disable = () => {
-                    const taskBtns = document.querySelectorAll('.task-add-btn');
-                    const editBtns = document.querySelectorAll('.task-edit-btn');
-                    disableBtns(taskBtns);
-                    disableBtns(editBtns);
-                };
+        const clear = () => {
+            const clearBtn = document.getElementById('new-task-date-reset');
+            createEvent([clearBtn], EVENT_TRIGGER, [clearDate]);
+        };
+        const validate = () => {
+            const validationBtn = document.getElementById('new-task-validate');
+            validateTaskEvent(validationBtn);
+        };
+        const cancel = () => {
+            const cancelBtn = document.getElementById('new-task-cancel');
+            cancelTaskEvent(cancelBtn);
+        };
+        const disable = () => {
+            const taskBtns = document.querySelectorAll('.task-add-btn');
+            const editBtns = document.querySelectorAll('.task-edit-btn');
+            disableBtns(taskBtns);
+            disableBtns(editBtns);
+        };
 
-                const newEvent = EventListener(btn, EVENT_TRIGGER, [eventFunction,
-                        clear, validate, cancel, disable]);
-                newEvent.assignEvent();
-            });
-        }
+        createEvent(btns, EVENT_TRIGGER, [eventFunction, clear, validate, 
+            cancel, disable]);
     };
 
     const createAddTaskEvent = () => {
@@ -355,7 +384,7 @@ const app = (() => {
         const editTask = (event) => {
             const taskId = parseInt(event.target.parentElement.dataset.taskId);
             const container = document.querySelector(`li[data-task-id="${taskId}"]`);
-            clearContainer(container);
+            display.clearContainer(container);
             createUpdateTask(container);
         };
 
@@ -378,12 +407,6 @@ const app = (() => {
         dateField.value = '';
     };
 
-    const createClearDateEvent = (target) => {
-        const EVENT_TRIGGER = 'click';
-        const clearEvent = EventListener(target, EVENT_TRIGGER, [clearDate]);
-        clearEvent.assignEvent();
-    }
-
     // creates event that adds new task to list above upon clicking check mark
     const createTaskValidationEvent = (target, eventFunction) => {
         const EVENT_TRIGGER = 'click';
@@ -394,10 +417,9 @@ const app = (() => {
             enableBtns(addTaskBtns);
             enableBtns(editTaskBtns);
         };
-        
-        const validationEvent = EventListener(target, EVENT_TRIGGER, [eventFunction, 
-                enable, createUpdateTaskEvent]);
-        validationEvent.assignEvent();
+
+        createEvent([target], EVENT_TRIGGER, [eventFunction, enable, 
+            createUpdateTaskEvent, createDeleteTaskEvent]);
     };
 
     const validateTaskEvent = (target) => {
@@ -412,39 +434,103 @@ const app = (() => {
 
     const cancelTaskEvent = (target) => {
         const newTaskWrapper = document.getElementById('new-task-container');
-        
+        const cancel = () => {
+            const newTaskWrapper = document.getElementById('new-task-container');
+            display.deleteElement(newTaskWrapper);
+        };
+
         if (newTaskWrapper) {
-            createTaskValidationEvent(target, cancelNewAddTask);
+            createTaskValidationEvent(target, cancel);
         } else {
             createTaskValidationEvent(target, cancelEditAddTask);
         }
+    };
+
+    const createDeleteTaskEvent = () => {
+        const deleteBtns = document.querySelectorAll('.check-mark');
+        const EVENT_TRIGGER = 'click';
+        const remove = (event) => {
+            const taskId = event.target.parentElement.dataset.taskId;
+            deleteTask(parseInt(taskId));
+        };
+        const clearDOM = (event) => {
+            const taskId = parseInt(event.target.parentElement.dataset.taskId);
+            const taskEl = document.querySelector(
+                `#content-area li[data-task-id="${taskId}"]`);
+            display.createFadeOut(taskEl, 350);
+        };
+
+        createEvent(deleteBtns, EVENT_TRIGGER, [remove, clearDOM]);
     };
 
     // links all events upon load. Only meant to be used once.
     const assignInitialEvents = () => {
         createCategoryEvents();
         createProjectEvents();
+        createDeleteProjectEvent();
         createAddProjectEvent();
         createAddTaskEvent();
         createUpdateTaskEvent();
+        createDeleteTaskEvent();
+    };
+
+    const storeData = () => {
+        if (localStorage.getItem('projects')) {
+            localStorage.removeItem('projects');
+        }
+
+        if (localStorage.getItem('tasks')) {
+            localStorage.removeItem('tasks');
+        }
+
+        let projects = projectModule.getProjects();
+        let tasks = taskModule.getTasks();
+
+        localStorage.setItem('projects', JSON.stringify(projects));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    };
+
+    const retrieveData = () => {
+        let projects = JSON.parse(localStorage.getItem('projects')) || [];
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        projects.forEach(project => {
+            project.id = parseInt(project.id);
+            project.taskIds = project.taskIds.map(id => parseInt(id));
+            projectModule.addProject(project);
+        });
+        
+        tasks.forEach(task => {
+            task.id = parseInt(task.id);
+            task.projectId = parseInt(task.projectId);
+            task.dueDate = parseJSON(task.dueDate);
+            taskModule.addTask(task);
+        });
+
     };
 
     return {renderMain, renderProjects, renderCategories, renderAllTasks,
-            assignInitialEvents};
+            assignInitialEvents, retrieveData};
 })();
 
 
 window.onload = (event) => {
+    
+    try {
+        app.retrieveData();
+    } catch(error) {
+        return error;
+    }
+    
     const mainContainer = document.getElementById('main-container');
     app.renderMain(mainContainer);
     
     const categoryContainer = document.getElementById('category-btns');
     const projectContainer = document.getElementById('projects');
     const contentContainer = document.getElementById('content-area');
+
     app.renderCategories(categoryContainer);
-    setTimeout(() => {
-        app.renderProjects(projectContainer);
-        app.renderAllTasks(contentContainer);
-        app.assignInitialEvents();
-    }, 11);
+    app.renderProjects(projectContainer);
+    app.renderAllTasks(contentContainer);
+    app.assignInitialEvents();
 };

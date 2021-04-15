@@ -89,9 +89,9 @@ const display = (() => {
                 li.dataset.projectId = item.projectId;
             }
 
-            if (item.iconClass) {
+            if (item.icon1Class) {
                 const icon = document.createElement('i');
-                icon.className = item.iconClass;
+                icon.className = item.icon1Class;
 
                 li.appendChild(icon);
             }
@@ -100,6 +100,18 @@ const display = (() => {
             span.textContent = item.label;
 
             li.appendChild(span);
+
+            if (item.icon2Class) {
+                const btn = document.createElement('button');
+                btn.className = 'delete-project';
+
+                const icon = document.createElement('i');
+                icon.className = item.icon2Class;
+                btn.appendChild(icon);
+
+                li.appendChild(btn);
+            }
+            
             target.appendChild(li);
         });
     };
@@ -177,6 +189,10 @@ const display = (() => {
         const circle = document.createElement('span');
         circle.className = 'check-circle';
         taskWrapper.appendChild(circle);
+
+        const checkMark = document.createElement('i');
+        checkMark.className = 'check-mark fas fa-check';
+        taskWrapper.appendChild(checkMark);
         
         const taskLabel = document.createElement('span');
         taskLabel.className = 'task-label';
@@ -329,9 +345,30 @@ const display = (() => {
         target.after(newTaskWrapper);
     };
 
+    const clearContainer = (target) => {
+        let firstChild = target.firstElementChild;
+
+        while (firstChild) {
+            firstChild.remove();
+            firstChild = target.firstElementChild;
+        }
+    };
+
+    const deleteElement = (target) => {
+        target.remove();
+    };
+
+    const createFadeOut = (target, delay) => {
+        target.style.opacity = '0';
+        setTimeout(() => {
+            deleteElement(target);
+        }, delay);
+    };
+
     return {renderMain, populateSideBar, renderContentArea, showProjectInput,
             showAddProjectBtn, hideProjectInput, hideAddProjectBtn, createNewTask,
-            renderTask, renderTaskList, renderNewTask};
+            renderTask, renderTaskList, renderNewTask, clearContainer,
+            deleteElement, createFadeOut};
 })();
 
 export default display;
