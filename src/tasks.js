@@ -59,7 +59,7 @@ const taskModule = (() => {
                     return -1;
                 }
             }
-            compareAsc(task1.dueDate, task2.dueDate);
+            return compareAsc(task1.dueDate, task2.dueDate);
         });
     };
 

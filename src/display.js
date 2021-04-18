@@ -385,10 +385,17 @@ const display = (() => {
         target.style.transform = 'translateX(300px)';
     };
 
+    const resetSideBar = () => {
+        const hamburgerLogo = document.getElementById('hamburger-logo');
+        const sideBar = document.getElementById('side-bar');
+        sideBar.style.transform = 'none';
+        hamburgerLogo.style.transform = 'none';
+    };
+
     return {renderMain, populateSideBar, renderContentArea, showProjectInput,
             showAddProjectBtn, hideProjectInput, hideAddProjectBtn, createNewTask,
             renderTask, renderTaskList, renderNewTask, clearContainer,
-            deleteElement, createFadeOut, showSideBar, hideSideBar};
+            deleteElement, createFadeOut, showSideBar, hideSideBar, resetSideBar};
 })();
 
 export default display;

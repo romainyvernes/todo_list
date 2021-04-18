@@ -187,8 +187,9 @@ const app = (() => {
             arr.push(taskModule.getTaskById(id));
             return arr;
         }, []));
+        
         newTasksList = taskModule.sortByDate(newTasksList);
-
+        
         display.clearContainer(listWrapper);
         display.deleteElement(addTaskWrapper);
 
@@ -561,4 +562,10 @@ window.onload = (event) => {
     app.renderProjects(projectContainer);
     app.renderAllTasks(contentContainer);
     app.assignInitialEvents();
+
+    window.onresize = (event) => {
+        if (window.innerWidth > 1000) {
+            display.resetSideBar();
+        }
+    }
 };
