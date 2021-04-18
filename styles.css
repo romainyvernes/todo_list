@@ -187,6 +187,8 @@ h1 {
     color: white;
     width: auto;
     overflow: auto;
+    background: url('background-logo.jpeg') no-repeat center;
+    background-size: 40%;
 }
 
 #content-label {
