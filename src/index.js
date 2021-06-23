@@ -904,6 +904,3 @@ function authStateObserver(user) {
         display.clearContainer(projectContainer);
     }
 }
-
-// TODO: Enable Firebase Performance Monitoring.
-firebase.performance();
