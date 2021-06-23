@@ -21,10 +21,17 @@ body {
 header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     height: 15vh;
     background-color: rgb(35, 163, 248);
     padding-left: 2em;
     padding-right: 2em;
+}
+
+.header-left-section,
+.header-right-section {
+    display: flex;
+    align-items: center;
 }
 
 header i {
@@ -40,14 +47,51 @@ h1 {
     height: fit-content;
 }
 
+.auth-btn {
+    border: none;
+    font-size: 1.1em;
+}
+
+.sign-out-btn {
+    display: flex;
+    align-items: center;
+}
+
+.auth-btn.hidden {
+    display: none;
+}
+
+.sign-out-btn button {
+    background-color: transparent;
+    padding: 0;
+    color: white;
+    margin: 0;
+    border: none;
+}
+
+.sign-out-btn button:hover {
+    cursor: pointer;
+}
+
+#profile-pic {
+    min-height: 20px;
+    min-width: 20px;
+    background-size: cover;
+    border-radius: 50%;
+}
+
+#user-name {
+    margin: 0 1.2em 0 0.5em;
+}
+
 #hamburger-logo {
-    margin-left: auto;
     background-color: transparent;
     outline: none;
     border: none;
     transition: transform 0.5s;
     font-size: 1em;
-    opacity: 0;
+    display: none;
+    margin-left: 1.5em;
 }
 
 #side-bar {
@@ -115,7 +159,8 @@ h1 {
 }
 
 #add-project-container,
-#projects li {
+#projects li,
+.auth-btn {
     padding: 0.6em 1em;
     border-radius: 5px;
     background-color: rgba(20, 47, 105);
@@ -123,7 +168,8 @@ h1 {
 }
 
 #add-project-container:hover,
-#projects li:hover {
+#projects li:hover,
+.auth-btn:hover {
     cursor: pointer;
     background-color: rgba(20, 47, 105, 0.623);
 }
@@ -366,7 +412,7 @@ input[type="radio"]:checked + i {
     }
     
     #hamburger-logo {
-        opacity: 1;
+        display: inline-block;
     }
 
     #content-area {
@@ -387,6 +433,18 @@ input[type="radio"]:checked + i {
 }
 
 @media (max-width: 630px) {
+    header i {
+        font-size: 1em;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+
+    .auth-btn {
+        transform: scale(0.8);
+    }
+    
     #new-task-container,
     #edit-task-container {
         margin-left: 0;
