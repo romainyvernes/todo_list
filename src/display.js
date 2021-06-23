@@ -1,17 +1,46 @@
 import { format } from 'date-fns';
 
 const display = (() => {
-
     const renderMain = (target) => {
         const header = document.createElement('header');
         
+        const siteNameWrapper = document.createElement('div');
+        siteNameWrapper.className = 'header-left-section';
+
         const logo = document.createElement('i');
         logo.className = 'far fa-check-circle';
-        header.appendChild(logo);
+        siteNameWrapper.appendChild(logo);
 
         const h1 = document.createElement('h1');
-        h1.textContent = 'My Todo';
-        header.appendChild(h1);
+        h1.textContent = 'MyTodo';
+        siteNameWrapper.appendChild(h1);
+
+        header.appendChild(siteNameWrapper);
+
+        const loginBtnWrapper = document.createElement('div');
+        loginBtnWrapper.className = 'header-right-section';
+
+        const signInBtn = document.createElement('button');
+        signInBtn.className = 'auth-btn sign-in-btn';
+        signInBtn.textContent = 'Sign In With Google';
+        loginBtnWrapper.appendChild(signInBtn);
+
+        const signOutContainer = document.createElement('div');
+        signOutContainer.className = 'auth-btn hidden sign-out-btn';
+
+        const profilePic = document.createElement('span');
+        profilePic.id = 'profile-pic';
+        signOutContainer.appendChild(profilePic);
+
+        const userName = document.createElement('p')
+        userName.id = 'user-name';
+        signOutContainer.appendChild(userName);
+
+        const signOutBtn = document.createElement('button');
+        signOutBtn.textContent = 'Sign Out';
+        signOutContainer.appendChild(signOutBtn);
+
+        loginBtnWrapper.appendChild(signOutContainer);
 
         const barsBtn = document.createElement('button');
         barsBtn.id = 'hamburger-logo';
@@ -20,7 +49,9 @@ const display = (() => {
         barsIcon.className = 'fas fa-bars';
         barsBtn.appendChild(barsIcon);
         
-        header.appendChild(barsBtn);
+        loginBtnWrapper.appendChild(barsBtn);
+
+        header.appendChild(loginBtnWrapper);
 
         const sideBar = document.createElement('div');
         sideBar.id = 'side-bar';
@@ -105,6 +136,7 @@ const display = (() => {
             }
 
             const span = document.createElement('span');
+            span.dataset.projectId = item.projectId;
             span.textContent = item.label;
 
             li.appendChild(span);
@@ -112,6 +144,7 @@ const display = (() => {
             if (item.icon2Class) {
                 const btn = document.createElement('button');
                 btn.className = 'delete-project';
+                btn.dataset.projectId = item.projectId;
 
                 const icon = document.createElement('i');
                 icon.className = item.icon2Class;
@@ -200,6 +233,7 @@ const display = (() => {
 
         const checkMark = document.createElement('i');
         checkMark.className = 'check-mark fas fa-check';
+        checkMark.dataset.taskId = task.id;
         taskWrapper.appendChild(checkMark);
         
         const taskLabel = document.createElement('span');
@@ -392,10 +426,25 @@ const display = (() => {
         hamburgerLogo.style.transform = 'none';
     };
 
-    return {renderMain, populateSideBar, renderContentArea, showProjectInput,
-            showAddProjectBtn, hideProjectInput, hideAddProjectBtn, createNewTask,
-            renderTask, renderTaskList, renderNewTask, clearContainer,
-            deleteElement, createFadeOut, showSideBar, hideSideBar, resetSideBar};
+    return {
+        renderMain, 
+        populateSideBar, 
+        renderContentArea, 
+        showProjectInput,
+        showAddProjectBtn, 
+        hideProjectInput, 
+        hideAddProjectBtn, 
+        createNewTask,
+        renderTask, 
+        renderTaskList, 
+        renderNewTask, 
+        clearContainer,
+        deleteElement, 
+        createFadeOut, 
+        showSideBar, 
+        hideSideBar, 
+        resetSideBar
+    };
 })();
 
 export default display;
