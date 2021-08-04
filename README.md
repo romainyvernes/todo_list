@@ -7,3 +7,5 @@ Start by logging in with your Google account, create a new project (e.g., home, 
 This project is from The Odin Project's Full Stack Javascript curriculum.
 
 [Live App](https://romainyvernes.github.io/todo_list/)
+
+![Todo List](https://user-images.githubusercontent.com/65140547/128108637-6ebecb04-70af-44df-984e-931551c9451d.png)
