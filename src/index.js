@@ -1,5 +1,9 @@
-import display from './display';
+import './styles/styles.css';
+import './assets/icons/fontawesome';
+import display from './components/display';
+import firebase from 'firebase';
 import { addDays, isWithinInterval, parseISO, compareAsc } from 'date-fns';
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 const app = (() => {
     const renderMain = (target) => {
@@ -790,8 +794,8 @@ const app = (() => {
     };
 })();
 
-const mainContainer = document.getElementById('main-container');
-app.renderMain(mainContainer);
+const body = document.querySelector('body');
+app.renderMain(body);
 
 const categoryContainer = document.getElementById('category-btns');
 const projectContainer = document.getElementById('projects');

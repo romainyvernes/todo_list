@@ -1,31 +1,101 @@
-html {
-    box-sizing: border-box;
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
-* {
-    font-family: 'Sulphur Point', sans-serif;
+/*
+ * Backgrounds
+ */
+
+/*
+ * Buttons, links, and inputs
+ */
+
+button, a, input {
+    font-family: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
 }
 
+/*
+ * Navigation lists
+ */
+
+ul {
+    list-style: none;
+}
+
+/*
+ * Fonts
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Sulphur+Point&display=swap');
+
+/* set website default font */
 body {
-    margin: 0;
+    font-family: 'Sulphur Point', sans-serif;
     background-color: rgb(20, 47, 105);
-    width: 100%;
+    color: #fff;
 }
 
 header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 15vh;
     background-color: rgb(35, 163, 248);
-    padding-left: 2em;
-    padding-right: 2em;
+    padding: 1em 2em;
 }
 
 .header-left-section,
@@ -36,19 +106,14 @@ header {
 
 header i {
     font-size: 2em;
-    color: white;
 }
 
 h1 {
-    margin: 0 0 0 0.5em;
-    color: white;
+    margin-left: 0.5em;
     font-size: 3em;
-    width: fit-content;
-    height: fit-content;
 }
 
 .auth-btn {
-    border: none;
     font-size: 1.1em;
 }
 
@@ -59,14 +124,6 @@ h1 {
 
 .auth-btn.hidden {
     display: none;
-}
-
-.sign-out-btn button {
-    background-color: transparent;
-    padding: 0;
-    color: white;
-    margin: 0;
-    border: none;
 }
 
 .sign-out-btn button:hover {
@@ -85,9 +142,6 @@ h1 {
 }
 
 #hamburger-logo {
-    background-color: transparent;
-    outline: none;
-    border: none;
     transition: transform 0.5s;
     font-size: 1em;
     display: none;
@@ -96,24 +150,16 @@ h1 {
 
 #side-bar {
     background-color: white;
-    height: 85vh;
     width: 300px;
     float: left;
     padding: 2em 1em;
     overflow: auto;
 }
 
-#side-bar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
 #category-btns li {
     background-color: rgb(35, 163, 248);
     padding: 0.6em 1em;
     border-radius: 5px;
-    color: white;
     margin-bottom: 0.7em;
 }
 
@@ -142,14 +188,9 @@ h1 {
 }
 
 #projects button {
-    border: none;
-    background-color: transparent;
-    color: white;
     float: right;
-    padding: 0;
     font-size: 0.9em;
     margin-top: 0.1em;
-    outline: none;
     transition: transform 0.3s;
 }
 
@@ -164,7 +205,6 @@ h1 {
     padding: 0.6em 1em;
     border-radius: 5px;
     background-color: rgba(20, 47, 105);
-    color: white;
 }
 
 #add-project-container:hover,
@@ -188,16 +228,13 @@ h1 {
 }
 
 #add-project-input input {
-    border: none;
     border-radius: 5px;
-    outline: none;
     padding: 0.2em 0.5em;
     width: 81%;
     font-size: 1.2em;
 }
 
 #add-project-input i {
-    color: white;
     font-size: 1.2em;
 }
 
@@ -207,11 +244,7 @@ h1 {
 #new-task-cancel {
     margin-left: 0.7em;
     margin-top: 0.2em;
-    padding: 0;
-    border: none;
-    background-color: transparent;
     height: 100%;
-    outline: none;
 }
 
 #project-validate:active,
@@ -224,22 +257,18 @@ h1 {
 #new-task-validate,
 #new-task-cancel {
     font-size: 1em;
-    margin-top: 0; 
 }
 
 #content-area {
     height: 85vh;
     padding: 1.5em;
-    color: white;
-    width: auto;
     overflow: auto;
-    background: url('background-logo.jpeg') no-repeat center;
+    background: url('../assets/images/background-logo.jpeg') no-repeat center;
     background-size: 40%;
 }
 
 #content-label {
     font-size: 2em;
-    margin: 0;
 }
 
 .name-wrapper {
@@ -254,7 +283,7 @@ h1 {
 
 .name-wrapper h3 {
     font-size: 1.4em;
-    margin: 0 0 0 0.5em;
+    margin-left: 0.5em;
 }
 
 .task-add-btn {
@@ -267,9 +296,7 @@ h1 {
     font-size: 1.8em;
     border: 2px solid rgb(35, 163, 248);
     background-color: rgb(20, 47, 105);
-    color: white;
     transition: transform 0.4s;
-    outline: none;
 }
 
 .task-add-btn:hover {
@@ -283,7 +310,6 @@ h1 {
 
 .task-wrapper,
 #new-task-container {
-    list-style-type: none;
     margin: 0.8em 0;
     background-color: white;
     color: black;
@@ -301,11 +327,6 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-#edit-task-container {
-    margin-left: 0;
-    margin-right: 0;
 }
 
 #new-task-name {
@@ -326,7 +347,6 @@ h1 {
     padding: 0.2em 0.4em;
     border: 1px solid grey;
     border-radius: 5px;
-    outline: none;
 }
 
 input[type="radio"] {
@@ -394,9 +414,6 @@ input[type="radio"]:checked + i {
 .task-edit-btn {
     float: right;
     color: rgba(35, 163, 248);
-    border: none;
-    background-color: transparent;
-    outline: none;
 }
 
 @media (max-width: 1000px) {
@@ -416,19 +433,7 @@ input[type="radio"]:checked + i {
     }
 
     #content-area {
-        margin-left: 0;
         z-index: 1;
-    }
-
-    #content-area ul {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    #new-task-container,
-    #edit-task-container {
-        margin-left: 0;
-        margin-right: 0;
     }
 }
 

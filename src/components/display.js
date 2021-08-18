@@ -1,14 +1,17 @@
 import { format } from 'date-fns';
+import { findIconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 const display = (() => {
     const renderMain = (target) => {
+        // page header
         const header = document.createElement('header');
+        header.className = 'primary-header';
         
         const siteNameWrapper = document.createElement('div');
         siteNameWrapper.className = 'header-left-section';
-
+        
         const logo = document.createElement('i');
-        logo.className = 'far fa-check-circle';
+        logo.className = 'far fa-check-circle'; /* HERE */
         siteNameWrapper.appendChild(logo);
 
         const h1 = document.createElement('h1');
@@ -46,14 +49,14 @@ const display = (() => {
         barsBtn.id = 'hamburger-logo';
 
         const barsIcon = document.createElement('i');
-        barsIcon.className = 'fas fa-bars';
+        barsIcon.className = 'fas fa-bars'; /* HERE */
         barsBtn.appendChild(barsIcon);
         
         loginBtnWrapper.appendChild(barsBtn);
 
         header.appendChild(loginBtnWrapper);
-
-        const sideBar = document.createElement('div');
+        // side bar
+        const sideBar = document.createElement('aside');
         sideBar.id = 'side-bar';
         
         const categoryBtns = document.createElement('ul');
@@ -72,7 +75,7 @@ const display = (() => {
         addProjectContainer.id = 'add-project-container';
         
         const addIcon = document.createElement('i');
-        addIcon.className = 'fas fa-plus';
+        addIcon.className = 'fas fa-plus'; /* HERE */
         addProjectContainer.appendChild(addIcon);
         
         const addSpan = document.createElement('span');
@@ -95,7 +98,7 @@ const display = (() => {
         projectValidateBtn.id = 'project-validate';
 
         const projectValidateIcon = document.createElement('i');
-        projectValidateIcon.className= 'fas fa-check';
+        projectValidateIcon.className= 'fas fa-check'; /* HERE */
         projectValidateBtn.appendChild(projectValidateIcon);
 
         projectInputWrapper.appendChild(projectValidateBtn);
@@ -105,14 +108,14 @@ const display = (() => {
         projectCancelBtn.id = 'project-cancel';
 
         const projectCancelIcon = document.createElement('i');
-        projectCancelIcon.className = 'fas fa-times';
+        projectCancelIcon.className = 'fas fa-times'; /* HERE */
         projectCancelBtn.appendChild(projectCancelIcon);
 
         projectInputWrapper.appendChild(projectCancelBtn);
 
         sideBar.appendChild(projectInputWrapper);
 
-        const contentArea = document.createElement('div');
+        const contentArea = document.createElement('section');
         contentArea.id = 'content-area';
 
         target.appendChild(header);
@@ -170,7 +173,7 @@ const display = (() => {
             nameWrapper.className = 'name-wrapper';
 
             const nameIcon = document.createElement('i');
-            nameIcon.className = 'fas fa-tasks';
+            nameIcon.className = 'fas fa-tasks'; /* HERE */
             nameWrapper.appendChild(nameIcon);
 
             const projectName = document.createElement('h3');
@@ -232,7 +235,7 @@ const display = (() => {
         taskWrapper.appendChild(circle);
 
         const checkMark = document.createElement('i');
-        checkMark.className = 'check-mark fas fa-check';
+        checkMark.className = 'check-mark fas fa-check'; /* HERE */
         checkMark.dataset.taskId = task.id;
         taskWrapper.appendChild(checkMark);
         
@@ -254,7 +257,7 @@ const display = (() => {
         priorityWrapper.className = 'priority-level';
 
         const flagIcon = document.createElement('i');
-        flagIcon.className = `${task.priority}-priority fab fa-font-awesome-flag`;
+        flagIcon.className = `${task.priority}-priority fab fa-font-awesome-flag`; /* HERE */
         priorityWrapper.appendChild(flagIcon);
         
         taskWrapper.appendChild(priorityWrapper);
@@ -265,7 +268,7 @@ const display = (() => {
         editBtn.dataset.taskId = task.id;
 
         const editIcon = document.createElement('i');
-        editIcon.className = 'far fa-edit';
+        editIcon.className = 'far fa-edit'; /* HERE */
         editBtn.appendChild(editIcon);
 
         taskWrapper.appendChild(editBtn);
@@ -344,7 +347,7 @@ const display = (() => {
             flagWrapper.appendChild(flagInput);
 
             const flagIcon = document.createElement('i');
-            flagIcon.className = `${level}-priority fab fa-font-awesome-flag`;
+            flagIcon.className = `${level}-priority fab fa-font-awesome-flag`; /* HERE */
             flagWrapper.appendChild(flagIcon);
 
             priorityWrapper.appendChild(flagWrapper);
@@ -359,7 +362,7 @@ const display = (() => {
         taskValidateBtn.id = 'new-task-validate';
 
         const taskValidateIcon = document.createElement('i');
-        taskValidateIcon.className= 'fas fa-check';
+        taskValidateIcon.className= 'fas fa-check'; /* HERE */
         taskValidateBtn.appendChild(taskValidateIcon);
         
         btnWrapper.appendChild(taskValidateBtn);
@@ -369,7 +372,7 @@ const display = (() => {
         taskCancelBtn.id = 'new-task-cancel';
 
         const taskCancelIcon = document.createElement('i');
-        taskCancelIcon.className = 'fas fa-times';
+        taskCancelIcon.className = 'fas fa-times'; /* HERE */
         taskCancelBtn.appendChild(taskCancelIcon);
         
         btnWrapper.appendChild(taskCancelBtn);
