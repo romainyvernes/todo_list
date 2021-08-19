@@ -1,22 +1,30 @@
-import './styles/styles.css';
+/* stylesheets */
+import './styles/reset.css';
+import './styles/main.css';
+/* fontawesome icons */
 import './assets/icons/fontawesome';
-import display from './components/display';
-import firebase from 'firebase';
+import { icon } from '@fortawesome/fontawesome-svg-core';
+/* components */
+import dom from './components/dom';
+/* firebase server */
+import firebase from "firebase/app";
+import './components/firebase';
+/*******************/
+/* date-fns library */
 import { addDays, isWithinInterval, parseISO, compareAsc } from 'date-fns';
-import { findIconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 const app = (() => {
     const renderMain = (target) => {
-        display.renderMain(target);
+        dom.renderMain(target);
     };
 
     const renderCategories = (target) => {
         const CATEGORIES = [
-            {label: 'All tasks', icon1Class: 'fas fa-inbox'},
-            {label: 'Today', icon1Class: 'fas fa-calendar-day'},
-            {label: 'Next 7 days', icon1Class: 'fas fa-calendar-week'}
+            {label: 'All tasks', icon1Class: icon({ prefix: 'fas', iconName: 'inbox'}).html},
+            {label: 'Today', icon1Class: icon({ prefix: 'fas', iconName: 'calendar-day'}).html},
+            {label: 'Next 7 days', icon1Class: icon({ prefix: 'fas', iconName: 'calendar-week'}).html}
         ];
-        display.populateSideBar(target, CATEGORIES);
+        dom.populateSideBar(target, CATEGORIES);
     };
 
     const renderProjects = (target) => {
@@ -29,10 +37,10 @@ const app = (() => {
         .get()
         .then((snapshot) => {
             snapshot.forEach((doc) => {
-                display.populateSideBar(target, [{
+                dom.populateSideBar(target, [{
                     label: doc.data().name,
-                    icon1Class: 'fas fa-folder-open',
-                    icon2Class: 'fas fa-trash-alt',
+                    icon1Class: icon({ prefix: 'fas', iconName: 'folder-open'}).html,
+                    icon2Class: icon({ prefix: 'fas', iconName: 'trash-alt'}).html,
                     projectId: doc.id
                 }]);
             });
@@ -79,7 +87,7 @@ const app = (() => {
                 );
                 
                 const label = document.querySelectorAll('#category-btns span')[0].textContent;
-                display.renderContentArea(target, projects, tasks, label);
+                dom.renderContentArea(target, projects, tasks, label);
             });
         }).catch((error) => {
             console.error('Error retrieving projects and tasks', error);
@@ -123,7 +131,7 @@ const app = (() => {
                 // filter tasks based on dates passed in
                 const filteredTasks = filterTasksByTimespan(taskArr, startDate, endDate);
                 
-                // retrieve projects' data from DB and pass into render function with tasks
+                // retrieve projects' data from DB and pass into render const with tasks
                 return firebase.firestore().collection('projects')
                 .get()
                 .then((snapshot) => {
@@ -138,7 +146,7 @@ const app = (() => {
                         };
                     });
                     
-                    display.renderContentArea(
+                    dom.renderContentArea(
                         target, 
                         projects, 
                         filteredTasks, 
@@ -146,7 +154,7 @@ const app = (() => {
                     );
                 });
             } else {
-                display.renderContentArea(target, [], [], title);
+                dom.renderContentArea(target, [], [], title);
             }
         }).catch((error) => {
             console.error('Error retrieving tasks and projects', error);
@@ -201,7 +209,7 @@ const app = (() => {
                         )
                     );
             
-                    display.renderContentArea(
+                    dom.renderContentArea(
                         target, 
                         [{
                             ...project,
@@ -230,15 +238,15 @@ const app = (() => {
         }).then((docRef) => {
             inputField.value = '';
 
-            display.hideProjectInput();
-            display.showAddProjectBtn();
+            dom.hideProjectInput();
+            dom.showAddProjectBtn();
             
-            display.clearContainer(projectsContainer);
+            dom.clearContainer(projectsContainer);
             renderProjects(projectsContainer).then(() => {
                 createProjectEvents();
                 createDeleteProjectEvent();
 
-                display.clearContainer(contentContainer);
+                dom.clearContainer(contentContainer);
                 renderProjectById(contentContainer, docRef.id).then(() => {
                     createAddTaskEvent();
                     createUpdateTaskEvent();
@@ -285,8 +293,8 @@ const app = (() => {
     const cancelAddProject = () => {
         const inputField = document.querySelector('#add-project-input input');
         inputField.value = '';
-        display.hideProjectInput();
-        display.showAddProjectBtn();
+        dom.hideProjectInput();
+        dom.showAddProjectBtn();
     };
 
     const collectTaskData = () => {
@@ -354,10 +362,10 @@ const app = (() => {
                 )
             );
             
-            display.clearContainer(listWrapper);
-            display.deleteElement(addTaskWrapper);
+            dom.clearContainer(listWrapper);
+            dom.deleteElement(addTaskWrapper);
     
-            display.renderTaskList(listWrapper, sortedTasks);
+            dom.renderTaskList(listWrapper, sortedTasks);
         }).catch((error) => {
             console.error('Error adding new task', error);
         });
@@ -409,8 +417,8 @@ const app = (() => {
                         priority
                     }).then(() => {
                         console.log('Task successfully updated');
-                        display.clearContainer(editTaskWrapper);
-                        display.renderTask(editTaskWrapper, {
+                        dom.clearContainer(editTaskWrapper);
+                        dom.renderTask(editTaskWrapper, {
                             name,
                             dueDate,
                             priority,
@@ -434,7 +442,7 @@ const app = (() => {
         .then((snapshot) => {
             snapshot.forEach((doc) => {
                 if (doc.id === taskId) {
-                    display.clearContainer(target);
+                    dom.clearContainer(target);
                     
                     const task = {...doc.data()};
                     
@@ -442,7 +450,7 @@ const app = (() => {
                         task.dueDate = task.dueDate.toDate();
                     } 
                     
-                    display.renderNewTask(target, {
+                    dom.renderNewTask(target, {
                         ...task,
                         id: taskId
                     });
@@ -483,7 +491,7 @@ const app = (() => {
         .then((snapshot) => {
             snapshot.forEach((doc) => {
                 if (doc.id === taskId) {
-                    display.clearContainer(editTaskWrapper);
+                    dom.clearContainer(editTaskWrapper);
 
                     const task = doc.data();
 
@@ -491,7 +499,7 @@ const app = (() => {
                         task.dueDate = task.dueDate.toDate();
                     }
 
-                    display.renderTask(editTaskWrapper, {
+                    dom.renderTask(editTaskWrapper, {
                         ...task,
                         id: doc.id
                     });
@@ -509,7 +517,7 @@ const app = (() => {
 
         categories.forEach((categoryEl, index) => {
             categoryEl.addEventListener(EVENT_TRIGGER, async () => {
-                display.clearContainer(contentContainer);
+                dom.clearContainer(contentContainer);
 
                 switch (index) {
                     case 0:
@@ -535,12 +543,12 @@ const app = (() => {
     // links each project button in side bar to corresponding events
     const createProjectEvents = () => {
         const contentContainer = document.getElementById('content-area');
-        const projects = document.querySelectorAll('#projects span');
+        const projects = document.querySelectorAll('#projects li');
         const EVENT_TRIGGER = 'click';
 
         projects.forEach((projectEl) => {
             projectEl.addEventListener(EVENT_TRIGGER, async (event) => {
-                display.clearContainer(contentContainer);
+                dom.clearContainer(contentContainer);
 
                 const { projectId } = event.currentTarget.dataset;
                 await renderProjectById(contentContainer, projectId);
@@ -558,8 +566,8 @@ const app = (() => {
         const EVENT_TRIGGER = 'click';
 
         projectBtn.addEventListener(EVENT_TRIGGER, () => {
-            display.hideAddProjectBtn();
-            display.showProjectInput();
+            dom.hideAddProjectBtn();
+            dom.showProjectInput();
 
             const validationBtn = document.getElementById('project-validate');
             validationBtn.addEventListener(EVENT_TRIGGER, addProject);
@@ -586,8 +594,8 @@ const app = (() => {
                 const projectEl = document.querySelector(
                     `#projects li[data-project-id="${projectId}"]`
                 );
-                display.deleteElement(projectEl);
-                display.clearContainer(contentArea);
+                dom.deleteElement(projectEl);
+                dom.clearContainer(contentArea);
                 
                 await renderAllTasks(contentArea);
 
@@ -628,7 +636,7 @@ const app = (() => {
                     `#content-area ul[data-project-id="${projectId}"]`
                 );
                 
-                display.createNewTask(projectContainer, projectId);
+                dom.createNewTask(projectContainer, projectId);
                 clear();
                 validate();
                 cancel();
@@ -646,7 +654,7 @@ const app = (() => {
                 const taskId = event.currentTarget.dataset.taskId;
                 const container = document.querySelector(`li[data-task-id="${taskId}"]`);
                 
-                display.clearContainer(container);
+                dom.clearContainer(container);
                 await createUpdateTask(container);
 
                 clear();
@@ -715,7 +723,7 @@ const app = (() => {
 
         if (newTaskWrapper) {
             target.addEventListener(EVENT_TRIGGER, async () => {
-                display.deleteElement(newTaskWrapper);
+                dom.deleteElement(newTaskWrapper);
                 enableBtns(addTaskBtns);
                 enableBtns(editTaskBtns);
                 createUpdateTaskEvent();
@@ -743,7 +751,7 @@ const app = (() => {
                 
                 const taskEl = document.querySelector(
                     `#content-area li[data-task-id="${taskId}"]`);
-                display.createFadeOut(taskEl, 350);
+                dom.fadeOut(taskEl, 350);
             });
         });
     };
@@ -754,14 +762,14 @@ const app = (() => {
         const EVENT_TRIGGER = 'click';
 
         hamburgerBtn.addEventListener(EVENT_TRIGGER, () => {
-            display.showSideBar(sideBar);
+            dom.showSideBar(sideBar);
             hamburgerBtn.removeEventListener(EVENT_TRIGGER, () => {
-                display.showSideBar(sideBar);
+                dom.showSideBar(sideBar);
             });
             hamburgerBtn.addEventListener(EVENT_TRIGGER, () => {
-                display.hideSideBar(sideBar);
+                dom.hideSideBar(sideBar);
                 hamburgerBtn.removeEventListener(EVENT_TRIGGER, () => {
-                    display.hideSideBar(sideBar);
+                    dom.hideSideBar(sideBar);
                 });
                 createSideBarToggleEvent();
             });
@@ -803,74 +811,55 @@ const contentContainer = document.getElementById('content-area');
 
 app.renderCategories(categoryContainer);
 
-// initialize Firebase
-initFirebaseAuth();
-    
-if (isUserSignedIn()) {
-    Promise.all([
-        app.renderProjects(projectContainer), 
-        app.renderAllTasks(contentContainer)
-    ]).then(() => {
-        app.assignInitialEvents();
-    });
-} else {
-    app.assignInitialEvents();
-}
-
-window.onresize = () => {
-    if (window.innerWidth > 1000) {
-        display.resetSideBar();
-    }
-}
+/*
+ * Firebase authentication
+ */
 
 const signInElement = document.querySelector('.sign-in-btn');
 const signOutElement = document.querySelector('.sign-out-btn');
 const profilePicElement = document.getElementById('profile-pic');
 const userNameElement = document.getElementById('user-name');
 
-signInElement.addEventListener('click', signIn);
-signOutElement.addEventListener('click', signOut);
-
-function signIn() {
+const signIn = () => {
     // Sign into Firebase using popup auth & Google as the identity provider.
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider);
 }
   
 // Signs-out of Friendly Chat.
-function signOut() {
+const signOut = () => {
     // Sign out of Firebase.
     firebase.auth().signOut();
 }
   
 // Initiate firebase auth.
-function initFirebaseAuth() {
+const initFirebaseAuth = () => {
     // Listen to auth state changes.
     firebase.auth().onAuthStateChanged(authStateObserver);
 }
   
 // Returns the signed-in user's profile Pic URL.
-function getProfilePicUrl() {
+const getProfilePicUrl = () => {
     return firebase.auth().currentUser.photoURL;
 }
   
 // Returns the signed-in user's display name.
-function getUserName() {
+const getUserName = () => {
     return firebase.auth().currentUser.displayName;
 }
 
 // Returns the signed-in user's unique ID
-function getUserId() {
+const getUserId = () => {
     return firebase.auth().currentUser.uid;
 }
   
 // Returns true if a user is signed-in.
-function isUserSignedIn() {
+const isUserSignedIn = () => {
     return !!firebase.auth().currentUser;
 }
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
-function authStateObserver(user) {
+const authStateObserver = (user) => {
     if (user) { // User is signed in!
         
         // Get the signed-in user's profile pic and name.
@@ -904,7 +893,24 @@ function authStateObserver(user) {
         // Show sign-in button.
         signInElement.classList.remove('hidden');
 
-        display.clearContainer(contentContainer);
-        display.clearContainer(projectContainer);
+        dom.clearContainer(contentContainer);
+        dom.clearContainer(projectContainer);
     }
 }
+
+// initialize Firebase
+initFirebaseAuth();
+
+if (isUserSignedIn()) {
+    Promise.all([
+        app.renderProjects(projectContainer), 
+        app.renderAllTasks(contentContainer)
+    ]).then(() => {
+        app.assignInitialEvents();
+    });
+} else {
+    app.assignInitialEvents();
+}
+
+signInElement.addEventListener('click', signIn);
+signOutElement.addEventListener('click', signOut);

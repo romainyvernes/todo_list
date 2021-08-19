@@ -4,6 +4,7 @@ import {
   faCalendarDay, 
   faCalendarWeek, 
   faCheck, 
+  faFlag, 
   faFolderOpen, 
   faInbox, 
   faPlus, 
@@ -12,7 +13,6 @@ import {
   faTrashAlt 
 } from '@fortawesome/free-solid-svg-icons';
 import { faCheckCircle, faEdit } from '@fortawesome/free-regular-svg-icons';
-import { faFontAwesomeFlag } from '@fortawesome/free-brands-svg-icons';
 
 library.add(
   faCheckCircle,
@@ -21,7 +21,7 @@ library.add(
   faCheck,
   faTimes,
   faTasks,
-  faFontAwesomeFlag,
+  faFlag,
   faEdit,
   faInbox,
   faCalendarDay,
