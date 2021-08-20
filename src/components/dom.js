@@ -5,7 +5,7 @@ const dom = (() => {
     const renderMain = (target) => {
         /* PAGE HEADER */
         const header = document.createElement('header');
-        header.className = 'primary-header';
+        header.className = 'primary-header secondary-bg';
 
         /* website logo with website name next to it */
         const siteNameWrapper = document.createElement('div');
@@ -26,12 +26,12 @@ const dom = (() => {
 
         /* sign in button */
         const signInBtn = document.createElement('button');
-        signInBtn.className = 'auth-btn sign-in-btn';
+        signInBtn.className = 'auth-btn sign-in-btn site-btn primary-bg rounded-corners';
         signInBtn.textContent = 'Sign In With Google';
         
         /* sign out button */
         const signOutContainer = document.createElement('div');
-        signOutContainer.className = 'auth-btn hidden sign-out-btn';
+        signOutContainer.className = 'auth-btn hide sign-out-btn site-btn primary-bg rounded-corners';
 
         const profilePic = document.createElement('span');
         profilePic.id = 'profile-pic';
@@ -40,7 +40,7 @@ const dom = (() => {
         userName.id = 'user-name';
         
         const signOutBtn = document.createElement('button');
-        signOutBtn.textContent = 'Sign Out';
+        signOutBtn.textContent = 'Sign out';
 
         signOutContainer.appendChild(profilePic);
         signOutContainer.appendChild(userName);
@@ -48,6 +48,7 @@ const dom = (() => {
 
         /* hamburger icon for mobile display */
         const barsBtn = document.createElement('button');
+        barsBtn.className = 'hide';
         barsBtn.id = 'hamburger-logo';
 
         const barsIcon = document.createElement('i');
@@ -64,10 +65,11 @@ const dom = (() => {
 
         /* MAIN PAGE AREA */
         const main = document.createElement('main');
+        main.className = 'primary-bg';
         
         /* SIDE BAR */
         const sideBar = document.createElement('aside');
-        sideBar.className = 'hide';
+        sideBar.className = 'hide neutral-bg';
         sideBar.id = 'side-bar';
 
         /* task sorting links */
@@ -90,6 +92,7 @@ const dom = (() => {
 
         /* add project button */
         const addProjectContainer = document.createElement('div');
+        addProjectContainer.className = 'primary-bg site-btn rounded-corners';
         addProjectContainer.id = 'add-project-container';
         
         const addIcon = document.createElement('i');
@@ -103,7 +106,7 @@ const dom = (() => {
     
         /* input area to display upon click of add project button */
         const projectInputWrapper = document.createElement('div');
-        projectInputWrapper.className = 'hide';
+        projectInputWrapper.className = 'hide site-btn primary-bg rounded-corners';
         projectInputWrapper.id = 'add-project-input';
 
         const projectInput = document.createElement('input');
@@ -155,8 +158,10 @@ const dom = (() => {
     const populateSideBar = (target, items) => {
         items.map(item => {
             const li = document.createElement('li');
+            li.className = 'rounded-corners';
             
             const link = document.createElement('a');
+            link.className = 'site-btn';
             link.href = '#';
 
             // ensure a project id exists before adding to anchor element as data
@@ -172,14 +177,16 @@ const dom = (() => {
                 link.appendChild(icon);
             }
 
-            // insert text into anchor as span element after icon above
-            const span = document.createElement('span');
-            span.textContent = item.label;
-            link.appendChild(span);
-
             // ensure that a second icon exists, create delete project button,
             // and insert into anchor
-            if (item.icon2Class) {
+            if (item.icon2Class) { // implies the items being rendered are project names
+                // sets background color
+                li.classList.add('primary-bg');
+                
+                // insert text into anchor as h3 element after first icon
+                const heading = document.createElement('h3');
+                heading.textContent = item.label;
+                
                 const btn = document.createElement('button');
                 btn.className = 'delete-project';
                 btn.dataset.projectId = item.projectId;
@@ -188,7 +195,16 @@ const dom = (() => {
                 icon.innerHTML = item.icon2Class;
                 btn.appendChild(icon);
 
+                link.appendChild(heading);
                 link.appendChild(btn);
+            } else { // implies the items being rendered are category names
+                // sets background color
+                li.classList.add('secondary-bg');
+                
+                // insert text into anchor as h2 element after icon above
+                const heading = document.createElement('h2');
+                heading.textContent = item.label;
+                link.appendChild(heading);
             }
 
             // insert anchor into list element
@@ -225,7 +241,7 @@ const dom = (() => {
             // task add button for each project
             const addBtn = document.createElement('button');
             addBtn.type = 'button';
-            addBtn.className = 'task-add-btn';
+            addBtn.className = 'task-add-btn primary-bg';
             addBtn.textContent = '+';
             addBtn.dataset.projectId = project.id;
 
@@ -244,6 +260,7 @@ const dom = (() => {
                 /* insert project name and task add button into a 
                 sub-container */
                 const projectHeader = document.createElement('div');
+                projectHeader.className = 'project-header';
                 
                 // create project name as h3 element
                 const projectName = document.createElement('h3');
@@ -292,6 +309,7 @@ const dom = (() => {
         
         // container for both bullet point and check sign
         const bulletWrapper = document.createElement('div');
+        bulletWrapper.className = 'bullet-point';
 
         // circle-shaped bullet point before task name
         const circle = document.createElement('span');
@@ -358,7 +376,7 @@ const dom = (() => {
         if (!target.matches('li')) { // implies a new task is being created
             const taskWrapper = document.createElement('li');
             taskWrapper.dataset.taskId = task.id;
-            taskWrapper.className = 'task-wrapper';
+            taskWrapper.className = 'task-wrapper neutral-bg rounded-corners';
 
             // insert left and right sides into task container
             taskWrapper.appendChild(leftSide);
@@ -404,6 +422,7 @@ const dom = (() => {
 
         // input for task name
         const taskName = document.createElement('input');
+        taskName.className = 'rounded-corners';
         taskName.id = 'new-task-name';
         taskName.type = 'text';
         taskName.placeholder = 'Enter task name here'
@@ -414,6 +433,7 @@ const dom = (() => {
         const dateWrapper = document.createElement('div');
 
         const dueDate = document.createElement('input');
+        dueDate.className = 'rounded-corners';
         dueDate.id = 'new-task-due-date';
         dueDate.type = 'date';
         if (task && task.dueDate !== '') {
@@ -423,6 +443,7 @@ const dom = (() => {
         }
 
         const resetDate = document.createElement('button');
+        resetDate.className = 'rounded-corners';
         resetDate.type = 'button'
         resetDate.id = 'new-task-date-reset';
         resetDate.textContent = 'Clear';
@@ -497,7 +518,8 @@ const dom = (() => {
     };
 
     const createNewTask = (target, projectId) => {
-        const newTaskWrapper = document.createElement('li');
+        const newTaskWrapper = document.createElement('div');
+        newTaskWrapper.className = 'neutral-bg rounded-corners task-wrapper';
         newTaskWrapper.id = 'new-task-container';
         newTaskWrapper.dataset.projectId = projectId;
 

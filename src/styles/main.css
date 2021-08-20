@@ -8,6 +8,18 @@
  * Backgrounds
  */
 
+.primary-bg {
+    background: rgb(20, 47, 105);
+}
+
+.secondary-bg {
+    background: rgb(35, 163, 248);
+}
+
+.neutral-bg {
+    background: #fff;
+}
+
 /*
  * Buttons, links, and inputs
  */
@@ -20,6 +32,17 @@ button, a, input {
     border: none;
     outline: none;
     text-decoration: none;
+    cursor: pointer;
+}
+
+.site-btn {
+    display: flex;
+    align-items: center;
+    padding: 0.6em 1em;
+}
+
+.site-btn:hover {
+    cursor: pointer;
 }
 
 /*
@@ -36,10 +59,9 @@ ul {
 
 @import url('https://fonts.googleapis.com/css2?family=Sulphur+Point&display=swap');
 
-/* set website default font */
+/* set website default font family and color */
 body {
     font-family: 'Sulphur Point', sans-serif;
-    background-color: rgb(20, 47, 105);
     color: #fff;
 }
 
@@ -61,6 +83,10 @@ body {
     }
 }
 
+.rounded-corners {
+    border-radius: 5px;
+}
+
 /*
  * Page header
  */
@@ -69,45 +95,28 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgb(35, 163, 248);
-    padding: 1em 2em;
+    padding: 0.5em 2em;
+    font-size: 0.9em;
 }
 
-.primary-header .left,
-.primary-header .right {
+.left,
+.right {
     display: flex;
     align-items: center;
 }
 
-.primary-header i {
-    font-size: 2em;
+.primary-header .left i {
+    font-size: 1.8em;
 }
 
 h1 {
     margin-left: 0.5em;
-    font-size: 3em;
-}
-
-.auth-btn {
-    font-size: 1.1em;
-}
-
-.sign-out-btn {
-    display: flex;
-    align-items: center;
-}
-
-.auth-btn.hidden {
-    display: none;
-}
-
-.sign-out-btn button:hover {
-    cursor: pointer;
+    font-size: 2.5em;
 }
 
 #profile-pic {
-    min-height: 20px;
-    min-width: 20px;
+    height: 20px;
+    width: 20px;
     background-size: cover;
     border-radius: 50%;
 }
@@ -117,10 +126,17 @@ h1 {
 }
 
 #hamburger-logo {
-    transition: transform 0.5s;
-    font-size: 1em;
-    display: none;
-    margin-left: 1.5em;
+    margin-left: 1em;
+    font-size: 1.5em;
+}
+
+/*
+ * Main page area
+ */
+
+main {
+    height: 100vh;
+    display: flex;
 }
 
 /*
@@ -128,32 +144,18 @@ h1 {
  */
 
 #side-bar {
-    background-color: white;
-    width: 300px;
-    float: left;
+    flex-basis: 280px;
     padding: 2em 1em;
     overflow: auto;
 }
 
+/* spacing between first icon and heading of every button */
+#side-bar .site-btn {
+    gap: 0.7em;
+}
+
 #category-btns li {
-    background-color: rgb(35, 163, 248);
-    padding: 0.6em 1em;
-    border-radius: 5px;
     margin-bottom: 0.7em;
-}
-
-#category-btns span {
-    font-size: 1.2em;
-    margin-left: 0.5em;
-}
-
-#category-btns li:hover {
-    cursor: pointer;
-    background-color: rgba(35, 163, 248, 0.733);
-}
-
-#side-bar h2 {
-    margin: 1.4em 0 1em 0.8em;
 }
 
 #projects li {
@@ -161,13 +163,7 @@ h1 {
     transition: opacity 0.3s;
 }
 
-#projects span {
-    margin-left: 0.4em;
-    font-size: 1.2em;
-}
-
 #projects button {
-    float: right;
     font-size: 0.9em;
     margin-top: 0.1em;
     transition: transform 0.3s;
@@ -178,51 +174,17 @@ h1 {
     transform: scale(1.2);
 }
 
-#add-project-container,
-#projects li,
-.auth-btn {
-    padding: 0.6em 1em;
-    border-radius: 5px;
-    background-color: rgba(20, 47, 105);
+/* move trash icon all the way to the right of container */
+.delete-project {
+    margin-left: auto;
 }
 
-#add-project-container:hover,
-#projects li:hover,
-.auth-btn:hover {
-    cursor: pointer;
-    background-color: rgba(20, 47, 105, 0.623);
-}
-
-#add-project-container span {
-    margin-left: 0.6em;
-    font-size: 1.2em;
-    display: inline-block;
-}
-
-#add-project-input {
-    border-radius: 5px;
-    background-color: rgba(20, 47, 105);
-    padding: 0.4em 0.6em;
+#side-bar div#add-project-input {
+    gap: 0;
 }
 
 #add-project-input input {
-    border-radius: 5px;
     padding: 0.2em 0.5em;
-    width: 81%;
-    font-size: 1.2em;
-}
-
-#add-project-input i {
-    font-size: 1.2em;
-}
-
-#project-validate,
-#project-cancel,
-#new-task-validate,
-#new-task-cancel {
-    margin-left: 0.7em;
-    margin-top: 0.2em;
-    height: 100%;
 }
 
 #project-validate:active,
@@ -232,50 +194,64 @@ h1 {
     transform: scale(0.8);
 }
 
-#new-task-validate,
-#new-task-cancel {
-    font-size: 1em;
-}
-
 /*
  * Content area
  */
 
 #content-area {
+    flex-grow: 1;
     padding: 1.5em;
     overflow: auto;
     background: url('../assets/images/background-logo.jpeg') no-repeat center;
     background-size: 40%;
 }
 
+/* header at the top of content area section */
+#content-area > header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* name of category or project in content area header */
 #content-area h2 {
     font-size: 2em;
 }
 
+/* container for projects and their respective tasks in content area section */
 #content-area article {
-    margin-top: 0.5em;
+    margin: 1.5em 0 3em 0;
 }
 
+/* container for project name and add task button within article elements */
+.project-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* container for project name and icon */
 .name-wrapper {
     display: flex;
+    align-items: center;
+    gap: 0.5em;
 }
 
+/* icon next to project name */
 .name-wrapper i {
     font-size: 1.4em;
 }
 
+/* project name */
 .name-wrapper h3 {
     font-size: 1.4em;
-    margin-left: 0.5em;
 }
 
+/* button to add tasks within each project */
 .task-add-btn {
     height: 45px;
     width: 45px;
     border-radius: 50%;
     font-size: 1.8em;
     border: 2px solid rgb(35, 163, 248);
-    background-color: rgb(20, 47, 105);
     transition: transform 0.4s;
 }
 
@@ -283,49 +259,46 @@ h1 {
     transform: rotate(90deg) scale(1.2);
 }
 
+/* lists of tasks within each project */
 #content-area ul {
-    margin-top: 2em;
-    padding-right: 3em;
+    margin-top: 1em;
 }
 
-.task-wrapper,
+/* create right indentation for all task-related containers */
+#content-area ul,
 #new-task-container {
-    margin: 0.8em 0;
-    background-color: white;
-    color: black;
-    border-radius: 5px;
-    padding: 0.7em 1em;
-    position: relative;
+    margin-right: 3em;
 }
 
-#new-task-container,
-#edit-task-container {
-    margin-left: 2.5em;
-    margin-right: 3em;
-    padding: 0.05em 2em 0.05em 2.5em;
+.task-wrapper {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    margin: 0.8em 0;
+    color: black;
+    padding: 0.7em 1em;
+}
+
+/* right side of task wrapper */
+.task-wrapper .right {
+    gap: 1em;
 }
 
 #new-task-name {
     border: 1px solid grey;
-    border-radius: 5px;
-    padding: 0.3em;
+    padding: 0 0.3em;
     font-size: 1em;
 }
 
 #new-task-due-date {
     border: 1px solid grey;
-    border-radius: 5px;
-    padding: 0.1em 0.5em;
+    padding: 0 0.5em;
 }
 
 #new-task-date-reset {
     margin-left: 0.5em;
-    padding: 0.2em 0.4em;
+    padding: 0 0.4em;
     border: 1px solid grey;
-    border-radius: 5px;
 }
 
 input[type="radio"] {
@@ -344,6 +317,12 @@ input[type="radio"]:checked + i {
     margin-left: 1em;
 }
 
+/* container for both circle and check mark */
+.bullet-point {
+    position: relative;
+}
+
+/* circle-shaped span element */
 .check-circle {
     border: 1px solid black;
     height: 12px;
@@ -353,9 +332,10 @@ input[type="radio"]:checked + i {
 }
 
 .check-mark {
+    font-size: 0.8em;
     position: absolute;
-    left: 1em;
-    top: 0.5em;
+    left: 1px;
+    top: -1px;
     opacity: 0;
 }
 
@@ -363,19 +343,9 @@ input[type="radio"]:checked + i {
     opacity: 1;
 }
 
-.check-mark:hover ~ .task-label {
+.bullet-point:hover ~ .task-label {
     text-decoration: line-through;
-}
-
-.task-date {
-    position: absolute;
-    right: 7em;
-}
-
-.priority-level {
-    display: inline-block;
-    position: absolute;
-    right: 4em;
+    text-decoration-thickness: 0.2em;
 }
 
 .low-priority {
@@ -391,7 +361,6 @@ input[type="radio"]:checked + i {
 }
 
 .task-edit-btn {
-    float: right;
     color: rgba(35, 163, 248);
 }
 
@@ -399,24 +368,33 @@ input[type="radio"]:checked + i {
  * Responsiveness
  */
 
+/* large screens display */
 @media (min-width: 1024px) {
     aside#side-bar {
         display: block;
     }
 }
 
+/* tablet display */
 @media (max-width: 1023px) {
-    #main-container {
+    main {
         position: relative;
     }
     
+    /* repositions side-bar to the right of page's main element, and on top of
+    all other elements */
     #side-bar {
         z-index: 5;
-        position: relative;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 280px;
     }
     
+    /* ensure hamburger */
     #hamburger-logo {
-        display: inline-block;
+        display: block;
     }
 
     #content-area {

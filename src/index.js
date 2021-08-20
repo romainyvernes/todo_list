@@ -86,7 +86,7 @@ const app = (() => {
                     )
                 );
                 
-                const label = document.querySelectorAll('#category-btns span')[0].textContent;
+                const label = document.querySelectorAll('#category-btns h2')[0].textContent;
                 dom.renderContentArea(target, projects, tasks, label);
             });
         }).catch((error) => {
@@ -164,14 +164,14 @@ const app = (() => {
     const renderToday = async (target) => {
         const startDate = new Date().setHours(0, 0, 0, 0);
         const endDate = new Date().setHours(23, 59, 59, 999);
-        const label = document.querySelectorAll('#category-btns span')[1].textContent;
+        const label = document.querySelectorAll('#category-btns h2')[1].textContent;
         await renderByTimespan(target, startDate, endDate, label);
     };
 
     const renderWeek = async (target) => {
         const startDate = new Date().setHours(0, 0, 0, 0);
         const endDate = addDays(startDate, 6).setHours(23, 59, 59, 999);
-        const label = document.querySelectorAll('#category-btns span')[2].textContent;
+        const label = document.querySelectorAll('#category-btns h2')[2].textContent;
         await renderByTimespan(target, startDate, endDate, label);
     };
 
@@ -871,10 +871,10 @@ const authStateObserver = (user) => {
         userNameElement.textContent = userName;
         
         // Show user's profile and sign-out button.
-        signOutElement.classList.remove('hidden');
+        signOutElement.classList.remove('hide');
 
         // Hide sign-in button.
-        signInElement.classList.add('hidden');
+        signInElement.classList.add('hide');
 
         Promise.all([
             app.renderProjects(projectContainer), 
@@ -888,10 +888,10 @@ const authStateObserver = (user) => {
         });
     } else { // User is signed out!
         // Hide user's profile and sign-out button.
-        signOutElement.classList.add('hidden');
+        signOutElement.classList.add('hide');
 
         // Show sign-in button.
-        signInElement.classList.remove('hidden');
+        signInElement.classList.remove('hide');
 
         dom.clearContainer(contentContainer);
         dom.clearContainer(projectContainer);
