@@ -26,17 +26,23 @@ const dom = (() => {
 
         /* sign in button */
         const signInBtn = document.createElement('button');
-        signInBtn.className = 'auth-btn sign-in-btn site-btn primary-bg rounded-corners';
-        signInBtn.textContent = 'Sign In With Google';
+        signInBtn.className = (
+            'auth-btn sign-in-btn site-btn primary-bg rounded-corners primary-bg-hovered'
+        );
+        signInBtn.textContent = 'Sign in with Google';
         
         /* sign out button */
         const signOutContainer = document.createElement('div');
-        signOutContainer.className = 'auth-btn hide sign-out-btn site-btn primary-bg rounded-corners';
+        signOutContainer.className = (
+            'auth-btn hide sign-out-btn site-btn primary-bg rounded-corners primary-bg-hovered'
+        );
 
         const profilePic = document.createElement('span');
+        profilePic.className = 'regular-display';
         profilePic.id = 'profile-pic';
 
         const userName = document.createElement('p');
+        userName.className = 'regular-display';
         userName.id = 'user-name';
         
         const signOutBtn = document.createElement('button');
@@ -69,7 +75,7 @@ const dom = (() => {
         
         /* SIDE BAR */
         const sideBar = document.createElement('aside');
-        sideBar.className = 'hide neutral-bg';
+        sideBar.className = 'neutral-bg';
         sideBar.id = 'side-bar';
 
         /* task sorting links */
@@ -82,6 +88,7 @@ const dom = (() => {
 
         /* section with links to projects and button to add new projects */
         const projectSection = document.createElement('section');
+        projectSection.className = 'projects';
         
         const h2 = document.createElement('h2');
         h2.textContent = 'Projects';
@@ -91,8 +98,10 @@ const dom = (() => {
         projects.id = 'projects';
 
         /* add project button */
-        const addProjectContainer = document.createElement('div');
-        addProjectContainer.className = 'primary-bg site-btn rounded-corners';
+        const addProjectContainer = document.createElement('button');
+        addProjectContainer.className = (
+            'primary-bg site-btn rounded-corners primary-bg-hovered'
+        );
         addProjectContainer.id = 'add-project-container';
         
         const addIcon = document.createElement('i');
@@ -106,7 +115,9 @@ const dom = (() => {
     
         /* input area to display upon click of add project button */
         const projectInputWrapper = document.createElement('div');
-        projectInputWrapper.className = 'hide site-btn primary-bg rounded-corners';
+        projectInputWrapper.className = (
+            'hide site-btn primary-bg rounded-corners'
+        );
         projectInputWrapper.id = 'add-project-input';
 
         const projectInput = document.createElement('input');
@@ -115,6 +126,7 @@ const dom = (() => {
         projectInput.maxLength = '30';
 
         const projectValidateBtn = document.createElement('button');
+        projectValidateBtn.className = 'shrink-on-click';
         projectValidateBtn.type = 'button';
         projectValidateBtn.id = 'project-validate';
 
@@ -124,6 +136,7 @@ const dom = (() => {
         projectValidateBtn.appendChild(projectValidateIcon);
 
         const projectCancelBtn = document.createElement('button');
+        projectCancelBtn.className = 'shrink-on-click';
         projectCancelBtn.type = 'button';
         projectCancelBtn.id = 'project-cancel';
 
@@ -181,7 +194,7 @@ const dom = (() => {
             // and insert into anchor
             if (item.icon2Class) { // implies the items being rendered are project names
                 // sets background color
-                li.classList.add('primary-bg');
+                li.classList.add('primary-bg', 'primary-bg-hovered');
                 
                 // insert text into anchor as h3 element after first icon
                 const heading = document.createElement('h3');
@@ -199,7 +212,7 @@ const dom = (() => {
                 link.appendChild(btn);
             } else { // implies the items being rendered are category names
                 // sets background color
-                li.classList.add('secondary-bg');
+                li.classList.add('secondary-bg', 'secondary-bg-hovered');
                 
                 // insert text into anchor as h2 element after icon above
                 const heading = document.createElement('h2');
@@ -303,6 +316,8 @@ const dom = (() => {
     };
 
     const renderTask = (target, task) => {
+        target.classList.remove('edit-mode');
+        
         // container for left side of task
         const leftSide = document.createElement('div');
         leftSide.className = 'left';
@@ -420,6 +435,9 @@ const dom = (() => {
             target.id = 'edit-task-container';
         }
 
+        // add additional styling to task wrappers when a task is being edited
+        target.classList.add('edit-mode');
+
         // input for task name
         const taskName = document.createElement('input');
         taskName.className = 'rounded-corners';
@@ -443,7 +461,7 @@ const dom = (() => {
         }
 
         const resetDate = document.createElement('button');
-        resetDate.className = 'rounded-corners';
+        resetDate.className = 'rounded-corners regular-display';
         resetDate.type = 'button'
         resetDate.id = 'new-task-date-reset';
         resetDate.textContent = 'Clear';
@@ -489,22 +507,30 @@ const dom = (() => {
 
         // button to save task input, which contains its own icon
         const taskValidateBtn = document.createElement('button');
+        taskValidateBtn.className = 'shrink-on-click';
         taskValidateBtn.type = 'button';
         taskValidateBtn.id = 'new-task-validate';
 
         // check mark icon for validation
         const taskValidateIcon = document.createElement('i');
-        taskValidateIcon.innerHTML = icon({ prefix: 'fas', iconName: 'check'}).html;
+        taskValidateIcon.innerHTML = icon({ 
+            prefix: 'fas', 
+            iconName: 'check'
+        }).html;
         taskValidateBtn.appendChild(taskValidateIcon);
 
         // button to remove entire new task container
         const taskCancelBtn = document.createElement('button');
+        taskCancelBtn.className = 'shrink-on-click';
         taskCancelBtn.type = 'button';
         taskCancelBtn.id = 'new-task-cancel';
 
         // "x" icon for cancellation
         const taskCancelIcon = document.createElement('i');
-        taskCancelIcon.innerHTML = icon({ prefix: 'fas', iconName: 'times'}).html;
+        taskCancelIcon.innerHTML = icon({
+            prefix: 'fas', 
+            iconName: 'times'
+        }).html;
         taskCancelBtn.appendChild(taskCancelIcon);
         
         // insert both validation and cancel buttons into a common container
@@ -548,14 +574,6 @@ const dom = (() => {
         }, delay);
     };
 
-    const showSideBar = (target) => {
-        target.classList.remove('hide');
-    };
-
-    const hideSideBar = (target) => {
-        target.classList.add('hide');
-    };
-
     return {
         renderMain, 
         populateSideBar, 
@@ -570,9 +588,7 @@ const dom = (() => {
         renderNewTask, 
         clearContainer,
         deleteElement, 
-        fadeOut, 
-        showSideBar, 
-        hideSideBar,
+        fadeOut,
     };
 })();
 

@@ -758,21 +758,16 @@ const app = (() => {
 
     const createSideBarToggleEvent = () => {
         const hamburgerBtn = document.getElementById('hamburger-logo');
+        const contentArea = document.getElementById('content-area');
         const sideBar = document.getElementById('side-bar');
         const EVENT_TRIGGER = 'click';
 
         hamburgerBtn.addEventListener(EVENT_TRIGGER, () => {
-            dom.showSideBar(sideBar);
-            hamburgerBtn.removeEventListener(EVENT_TRIGGER, () => {
-                dom.showSideBar(sideBar);
-            });
-            hamburgerBtn.addEventListener(EVENT_TRIGGER, () => {
-                dom.hideSideBar(sideBar);
-                hamburgerBtn.removeEventListener(EVENT_TRIGGER, () => {
-                    dom.hideSideBar(sideBar);
-                });
-                createSideBarToggleEvent();
-            });
+            sideBar.classList.toggle('slide-in');
+        });
+
+        contentArea.addEventListener(EVENT_TRIGGER, () => {
+            sideBar.classList.remove('slide-in');
         });
     };
 

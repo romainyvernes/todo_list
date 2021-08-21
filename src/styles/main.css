@@ -12,8 +12,16 @@
     background: rgb(20, 47, 105);
 }
 
+.primary-bg-hovered:hover {
+    background: rgb(22, 62, 148);
+}
+
 .secondary-bg {
     background: rgb(35, 163, 248);
+}
+
+.secondary-bg-hovered:hover {
+    background: rgba(35, 163, 248, 0.8);
 }
 
 .neutral-bg {
@@ -32,6 +40,9 @@ button, a, input {
     border: none;
     outline: none;
     text-decoration: none;
+}
+
+button, a {
     cursor: pointer;
 }
 
@@ -57,12 +68,13 @@ ul {
  * Fonts
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Sulphur+Point&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sulphur+Point:wght@400;700&display=swap');
 
 /* set website default font family and color */
 body {
     font-family: 'Sulphur Point', sans-serif;
     color: #fff;
+    white-space: nowrap;
 }
 
 /*
@@ -87,6 +99,20 @@ body {
     border-radius: 5px;
 }
 
+.shrink-on-click:active {
+    transform: scale(0.8);
+}
+
+/*
+ * Containers
+ */
+
+.left,
+.right {
+    display: flex;
+    align-items: center;
+}
+
 /*
  * Page header
  */
@@ -97,12 +123,6 @@ body {
     justify-content: space-between;
     padding: 0.5em 2em;
     font-size: 0.9em;
-}
-
-.left,
-.right {
-    display: flex;
-    align-items: center;
 }
 
 .primary-header .left i {
@@ -126,7 +146,7 @@ h1 {
 }
 
 #hamburger-logo {
-    margin-left: 1em;
+    margin-left: 0.5em;
     font-size: 1.5em;
 }
 
@@ -146,52 +166,74 @@ main {
 #side-bar {
     flex-basis: 280px;
     padding: 2em 1em;
-    overflow: auto;
+    overflow-y: scroll;
+    font-size: 1.1em;
 }
 
-/* spacing between first icon and heading of every button */
+/* container for projects heading and list of projects in side bar */
+.projects {
+    margin-top: 2em;
+}
+
+/* h2 element for list of projects */
+.projects h2 {
+    margin-bottom: 0.5em;
+    color: #000;
+    font-weight: 700;
+    font-size: 1.3em;
+}
+
+/* shrinks all icons in side bar */
+#side-bar i {
+    font-size: 0.7em;
+}
+
+/* spacing between first icon and heading of every button in side bar */
 #side-bar .site-btn {
     gap: 0.7em;
 }
 
-#category-btns li {
+/* adds spacing below every clickable button in side bar */
+#side-bar li {
     margin-bottom: 0.7em;
 }
 
+/* creates ease-out effect when projects are deleted from side bar */
 #projects li {
-    margin-bottom: 0.7em;
     transition: opacity 0.3s;
-}
-
-#projects button {
-    font-size: 0.9em;
-    margin-top: 0.1em;
-    transition: transform 0.3s;
-}
-
-#projects button:hover {
-    color: rgb(177, 2, 2);
-    transform: scale(1.2);
 }
 
 /* move trash icon all the way to the right of container */
 .delete-project {
     margin-left: auto;
+    transition: transform 0.3s;
 }
 
+.delete-project:hover {
+    color: rgb(177, 2, 2);
+    transform: scale(1.2);
+}
+
+/* use 3 selectors to counter gap property defined on site buttons in 
+side-bar */
 #side-bar div#add-project-input {
-    gap: 0;
+    gap: 0.5em;
+    padding-right: 0.7em;
 }
 
+#add-project-container {
+    width: 100%;
+}
+
+/* input element within container to add new project */
 #add-project-input input {
-    padding: 0.2em 0.5em;
+    flex-grow: 1;
+    font-size: 0.9em;
 }
 
-#project-validate:active,
-#project-cancel:active,
-#new-task-validate:active,
-#new-task-cancel:active {
-    transform: scale(0.8);
+/* validation and cancel buttons to add new projects */
+#add-project-input button {
+    padding: 0;
 }
 
 /*
@@ -199,6 +241,8 @@ main {
  */
 
 #content-area {
+    max-width: 1000px;
+    margin: 0 auto;
     flex-grow: 1;
     padding: 1.5em;
     overflow: auto;
@@ -212,14 +256,16 @@ main {
     justify-content: space-between;
 }
 
-/* name of category or project in content area header */
-#content-area h2 {
+/* applies uniform font size for icons and h2 elements in header of content
+area */
+#content-area h2,
+#content-area header i {
     font-size: 2em;
 }
 
 /* container for projects and their respective tasks in content area section */
 #content-area article {
-    margin: 1.5em 0 3em 0;
+    margin: 0.7em 0 3em 0;
 }
 
 /* container for project name and add task button within article elements */
@@ -235,13 +281,8 @@ main {
     gap: 0.5em;
 }
 
-/* icon next to project name */
-.name-wrapper i {
-    font-size: 1.4em;
-}
-
-/* project name */
-.name-wrapper h3 {
+/* applies to project names when they are part of an article element */
+.project-header .name-wrapper {
     font-size: 1.4em;
 }
 
@@ -251,7 +292,7 @@ main {
     width: 45px;
     border-radius: 50%;
     font-size: 1.8em;
-    border: 2px solid rgb(35, 163, 248);
+    border: 0.1em solid rgb(35, 163, 248);
     transition: transform 0.4s;
 }
 
@@ -264,12 +305,14 @@ main {
     margin-top: 1em;
 }
 
-/* create right indentation for all task-related containers */
+/* create right indentation for all task-related containers in content area */
 #content-area ul,
 #new-task-container {
     margin-right: 3em;
 }
 
+/* common features applicable to task containers when task is either displayed
+or is being edited */
 .task-wrapper {
     display: flex;
     align-items: center;
@@ -279,42 +322,77 @@ main {
     padding: 0.7em 1em;
 }
 
+/* hide name of task when took long */
+.task-wrapper .left {
+    overflow: hidden;
+}
+
 /* right side of task wrapper */
 .task-wrapper .right {
     gap: 1em;
 }
 
-#new-task-name {
+/* name of task when task is displayed */
+.task-label {
+    margin-left: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* features specific to task containers when a task is being edited */
+.edit-mode {
+    padding: 0.5em 1em;
+}
+
+/* set common border style to all input elements and clear button on edit mode */
+.edit-mode input,
+#new-task-date-reset {
     border: 1px solid grey;
-    padding: 0 0.3em;
-    font-size: 1em;
+}
+
+#new-task-name {
+    padding: 0.2em 0.3em;
 }
 
 #new-task-due-date {
-    border: 1px solid grey;
     padding: 0 0.5em;
 }
 
 #new-task-date-reset {
     margin-left: 0.5em;
     padding: 0 0.4em;
-    border: 1px solid grey;
 }
 
+#new-task-date-reset:hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+/* container for flag icons */
+#new-task-priority-wrapper {
+    /* set height equal to container height instead of content height to fix 
+    jumping effect that occurs when container height briefly changes upon 
+    priority change */
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+}
+
+/* hide default radio input */
 input[type="radio"] {
     display: none;
 }
 
+/* when one of the radio input elements is selected, slightly increase the size
+of its corresponding flag */
 input[type="radio"]:checked + i {
-    transform: scale(1.3);
+    font-size: 1.2em;
 }
 
+/* space out flags and smooth flag size change */
 #new-task-priority-wrapper i {
-    margin: 0.7em 0.2em;
-}
-
-.task-label {
-    margin-left: 1em;
+    margin: 0 0.2em;
+    transition: font-size 0.2s;
 }
 
 /* container for both circle and check mark */
@@ -331,6 +409,7 @@ input[type="radio"]:checked + i {
     display: inline-block;
 }
 
+/* check mark to indicate a task is completed */
 .check-mark {
     font-size: 0.8em;
     position: absolute;
@@ -361,19 +440,12 @@ input[type="radio"]:checked + i {
 }
 
 .task-edit-btn {
-    color: rgba(35, 163, 248);
+    color: rgb(35, 163, 248);
 }
 
 /*
  * Responsiveness
  */
-
-/* large screens display */
-@media (min-width: 1024px) {
-    aside#side-bar {
-        display: block;
-    }
-}
 
 /* tablet display */
 @media (max-width: 1023px) {
@@ -388,52 +460,99 @@ input[type="radio"]:checked + i {
         position: absolute;
         right: 0;
         top: 0;
-        bottom: 0;
+        transition: 0.3s;
+        width: 0;
+        padding: 2em 0;
+    }
+
+    #side-bar.slide-in {
         width: 280px;
+        padding: 2em 1em;
     }
     
     /* ensure hamburger */
     #hamburger-logo {
         display: block;
     }
-
-    #content-area {
-        z-index: 1;
-    }
 }
 
-@media (max-width: 630px) {
-    .primary-header i {
-        font-size: 1em;
+/* standard mobile display */
+@media (max-width: 767px) {
+    body {
+        font-size: 0.9em;
     }
-    
+
     h1 {
-        font-size: 2em;
-    }
-
-    .auth-btn {
-        transform: scale(0.8);
+        margin-left: 0.25em;
     }
     
-    #new-task-container,
-    #edit-task-container {
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0.2em;
-        padding-right: 0.2em;
-        justify-content: space-evenly;
+    .primary-header {
+        padding: 1em;
     }
 
-    #new-task-due-date {
-        width: 130px;
+    /* let tasks take up 100 percent of window width */
+    #content-area ul,
+    #new-task-container {
+        margin-right: 0;
+    }
+
+    /* remove excessive padding on the right of task wrapper */
+    .task-wrapper {
+        padding-right: 0.5em;
+    }
+
+    /* hide elements considered unnecessary on smaller displays */
+    .regular-display {
+        display: none;
+    }
+
+    /* hide hamburger logo to free up space when user is not logged in */
+    .sign-out-btn.hide + #hamburger-logo {
+        display: none;
+    }
+
+    .task-label {
+        margin-left: 0.5em;
+    }
+
+    .edit-mode {
+        gap: 0.5em;
+    }
+
+    .edit-mode button {
+        padding: 0 0.25em;
     }
 
     #new-task-name {
-        width: 150px;
+        margin-right: auto;
+        width: 100%;
+        max-width: 250px;
     }
 
-    #new-task-validate,
-    #new-task-cancel {
-        margin-left: 0.3em;
+    /* remove default border */
+    #new-task-due-date {
+        border: none;
+    }
+
+    /* remove display of current selected date */
+    #new-task-due-date::-webkit-datetime-edit {
+        display: none;
+    }
+
+    #new-task-due-date::-webkit-calendar-picker-indicator {
+        margin: 0;
+    }
+}
+
+/* small mobile display */
+@media (max-width: 319px) {
+    /* hide due date and flag */
+    .task-date,
+    .priority-level {
+        display: none;
+    }
+
+    .primary-header .site-btn {
+        padding: 0.2em;
     }
 }
