@@ -246,8 +246,7 @@ side-bar */
     flex-grow: 1;
     padding: 1.5em;
     overflow: auto;
-    background: url('../assets/images/background-logo.jpeg') no-repeat center;
-    background-size: 40%;
+    background: url('../assets/images/background-logo.jpeg') center/50vh no-repeat;
 }
 
 /* header at the top of content area section */
@@ -488,6 +487,10 @@ input[type="radio"]:checked + i {
     
     .primary-header {
         padding: 1em;
+    }
+
+    #content-area {
+        background-size: contain;
     }
 
     /* let tasks take up 100 percent of window width */
